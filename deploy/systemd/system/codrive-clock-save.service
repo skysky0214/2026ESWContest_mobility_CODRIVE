@@ -1,0 +1,8 @@
+[Unit]
+Description=Persist recently synchronized Pi time and update Jetson RTC0
+After=chrony.service codrive-clock-restore.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/codrive-clock.py save
+TimeoutStartSec=15

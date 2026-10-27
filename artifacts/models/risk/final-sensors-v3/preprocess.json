@@ -1,0 +1,201 @@
+{
+  "schema_version": 3,
+  "raw_fields": [
+    "pedestrian_count",
+    "vehicle_count",
+    "bicycle_count",
+    "motorcycle_count",
+    "stop_sign_detected",
+    "central_object_present",
+    "max_bbox_area",
+    "traffic_light",
+    "driver_behavior",
+    "attention_score",
+    "drowsiness_score",
+    "looking_forward",
+    "phone_detected",
+    "behavior_duration_ms",
+    "audio_kind",
+    "audio_direction",
+    "speed_mps",
+    "accelerator_pct",
+    "brake_pressed",
+    "speed_accel_mps2",
+    "accelerator_rate_pct_s",
+    "acceleration_duration_ms",
+    "pedal_rate_duration_ms",
+    "weather",
+    "is_night",
+    "precipitation_mm_h",
+    "snowfall_cm_h",
+    "visibility_m",
+    "front_valid",
+    "driver_valid",
+    "audio_valid",
+    "speed_valid",
+    "pedal_valid",
+    "brake_valid",
+    "weather_valid",
+    "daylight_valid"
+  ],
+  "feature_names": [
+    "traffic_light_RED",
+    "traffic_light_YELLOW",
+    "traffic_light_GREEN",
+    "traffic_light_OFF",
+    "driver_behavior_awake",
+    "driver_behavior_phone",
+    "driver_behavior_drowsy",
+    "driver_behavior_head_drop",
+    "driver_behavior_distracted",
+    "audio_kind_none",
+    "audio_kind_siren",
+    "audio_kind_horn",
+    "audio_kind_other",
+    "audio_direction_left",
+    "audio_direction_right",
+    "weather_CLEAR",
+    "weather_CLOUDY",
+    "weather_RAIN",
+    "weather_SNOW",
+    "weather_FOG",
+    "weather_THUNDER",
+    "pedestrian_count",
+    "vehicle_count",
+    "bicycle_count",
+    "motorcycle_count",
+    "max_bbox_area",
+    "attention_score",
+    "drowsiness_score",
+    "behavior_duration_ms",
+    "speed_mps",
+    "accelerator_pct",
+    "speed_accel_mps2",
+    "accelerator_rate_pct_s",
+    "acceleration_duration_ms",
+    "pedal_rate_duration_ms",
+    "precipitation_mm_h",
+    "snowfall_cm_h",
+    "visibility_m",
+    "stop_sign_detected",
+    "central_object_present",
+    "looking_forward",
+    "phone_detected",
+    "brake_pressed",
+    "is_night",
+    "front_valid",
+    "driver_valid",
+    "audio_valid",
+    "speed_valid",
+    "pedal_valid",
+    "brake_valid",
+    "weather_valid",
+    "daylight_valid"
+  ],
+  "classes": [
+    "LOW",
+    "MEDIUM",
+    "HIGH"
+  ],
+  "hybrid": false,
+  "category_encoding": {
+    "traffic_light": [
+      "RED",
+      "YELLOW",
+      "GREEN",
+      "OFF"
+    ],
+    "driver_behavior": [
+      "awake",
+      "phone",
+      "drowsy",
+      "head_drop",
+      "distracted"
+    ],
+    "audio_kind": [
+      "none",
+      "siren",
+      "horn",
+      "other"
+    ],
+    "audio_direction": [
+      "left",
+      "right"
+    ],
+    "weather": [
+      "CLEAR",
+      "CLOUDY",
+      "RAIN",
+      "SNOW",
+      "FOG",
+      "THUNDER"
+    ]
+  },
+  "validity_groups": {
+    "front_valid": [
+      "pedestrian_count",
+      "vehicle_count",
+      "bicycle_count",
+      "motorcycle_count",
+      "stop_sign_detected",
+      "central_object_present",
+      "max_bbox_area",
+      "traffic_light"
+    ],
+    "driver_valid": [
+      "driver_behavior",
+      "attention_score",
+      "drowsiness_score",
+      "looking_forward",
+      "phone_detected",
+      "behavior_duration_ms"
+    ],
+    "audio_valid": [
+      "audio_kind",
+      "audio_direction"
+    ],
+    "speed_valid": [
+      "speed_mps",
+      "speed_accel_mps2",
+      "acceleration_duration_ms"
+    ],
+    "pedal_valid": [
+      "accelerator_pct",
+      "accelerator_rate_pct_s",
+      "pedal_rate_duration_ms"
+    ],
+    "brake_valid": [
+      "brake_pressed"
+    ],
+    "weather_valid": [
+      "weather",
+      "precipitation_mm_h",
+      "snowfall_cm_h",
+      "visibility_m"
+    ],
+    "daylight_valid": [
+      "is_night"
+    ]
+  },
+  "missing": "JSON null -> NaN; false validity never substitutes normal observations",
+  "units": {
+    "speed_mps": "m/s",
+    "accelerator_pct": "%",
+    "speed_accel_mps2": "m/s^2",
+    "accelerator_rate_pct_s": "percentage points/s",
+    "behavior_duration_ms": "ms",
+    "acceleration_duration_ms": "ms",
+    "pedal_rate_duration_ms": "ms",
+    "precipitation_mm_h": "mm/h",
+    "snowfall_cm_h": "cm/h",
+    "visibility_m": "m",
+    "max_bbox_area": "normalized image area [0,1]"
+  },
+  "temporal_features": "RiskEngine.last_features; actual per-signal timestamps; max 32 samples",
+  "label_mapping": {
+    "no_candidate": "LOW",
+    "INFO": "MEDIUM",
+    "WARNING": "HIGH",
+    "CRITICAL": "HIGH"
+  }
+}

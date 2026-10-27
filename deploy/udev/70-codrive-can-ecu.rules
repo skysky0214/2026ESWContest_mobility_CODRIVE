@@ -1,0 +1,4 @@
+# Allow the Pi's existing plugdev group to read ST-LINK UART without root.
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{idProduct}=="374e", GROUP="plugdev", MODE="0660"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{product}=="*STLink*", GROUP="plugdev", MODE="0660"
+SUBSYSTEM=="tty", ATTRS{idVendor}=="0483", ATTRS{product}=="*ST-LINK*", GROUP="plugdev", MODE="0660"

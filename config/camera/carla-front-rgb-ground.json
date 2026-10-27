@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "image_size": [
+    1280,
+    720
+  ],
+  "image_points": [
+    [
+      0,
+      388.06360802136913
+    ],
+    [
+      1280,
+      388.06360802136913
+    ],
+    [
+      1280,
+      720
+    ],
+    [
+      0,
+      720
+    ]
+  ],
+  "ground_points_m": [
+    [
+      -36.48853701278437,
+      65.00000000000006
+    ],
+    [
+      36.48853701278437,
+      65.00000000000006
+    ],
+    [
+      2.8444444444444446,
+      6.726722297084807
+    ],
+    [
+      -2.8444444444444446,
+      6.726722297084807
+    ]
+  ],
+  "maximum_distance_m": 65,
+  "path_half_width_m": 1.5,
+  "calibration_source": "Analytic CARLA RGB pinhole, full visible ground width, 60 degree horizontal FOV; no monitor recapture transform",
+  "camera_spec": {
+    "native_size": [
+      1920,
+      1080
+    ],
+    "horizontal_fov_deg": 60,
+    "mount_forward_m": 1.8,
+    "mount_right_m": 0,
+    "mount_height_m": 1.6,
+    "pitch_deg": 0
+  },
+  "limitations": [
+    "Flat ground and fixed camera mount; dynamic vehicle pitch/roll can bias distance",
+    "No physical lens or screen recapture calibration",
+    "No object coordinates supplied to perception"
+  ],
+  "fov_update": {
+    "from_deg": 90,
+    "to_deg": 60,
+    "focal_length_ratio": 1.7320508075688772,
+    "method": "Analytic zero-pitch pinhole update of forward ground coordinates; physical screen/lens registration unchanged"
+  },
+  "vehicle_motion": {
+    "wheelbase_m": 2.5064960560065392,
+    "rear_axle_offset_m": 1.2562982994355474,
+    "maximum_road_wheel_deg": 69.99999237060547,
+    "steering_curve_kmh": [
+      [
+        0.0,
+        1.0
+      ],
+      [
+        20.0,
+        0.8999999761581421
+      ],
+      [
+        60.0,
+        0.800000011920929
+      ],
+      [
+        120.0,
+        0.699999988079071
+      ]
+    ]
+  }
+}

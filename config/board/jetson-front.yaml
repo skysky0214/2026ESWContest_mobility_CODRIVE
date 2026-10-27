@@ -1,0 +1,34 @@
+schema_version: 1
+node_id: jetson-front
+role: external_perception
+dds:
+  domain_id: 42
+  interface: eth0
+  config_uri: config/cyclonedds.xml
+time_sync:
+  mode: ptp_slave
+  max_offset_ms: 5
+cameras:
+  - camera_id: front
+    source_id: jetson-front.front
+    frame_id: camera_front_optical
+    source:
+      type: gmsl
+      backend: argus
+      sensor_id: 0
+      width: 1280
+      height: 720
+      fps: 30
+    pipelines:
+      - type: object_detector
+        backend: tensorrt
+        engine: models/yolo11n_front.engine
+        classes: [person, car, truck, bus, bicycle, motorcycle, traffic_light]
+      - type: lane_detector
+        backend: opencv
+publish:
+  raw_video_over_dds: false
+  external_perception_hz: 30
+health:
+  heartbeat_hz: 2
+  inference_deadline_ms: 85

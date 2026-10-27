@@ -1,0 +1,94 @@
+schema_version: 1
+node_id: jetson-cabin
+role: cabin_audio_perception
+dds:
+  domain_id: 42
+  interface: enP8p1s0
+  config_uri: config/integration/cyclonedds-jetson2-wired.xml
+time_sync:
+  mode: chrony_client
+  server: 192.168.50.10
+  max_offset_ms: 5
+cameras:
+- camera_id: cabin
+  source_id: jetson-cabin.dms
+  frame_id: camera_cabin_optical
+  source:
+    type: usb
+    backend: v4l2
+    device: /dev/video0
+    width: 640
+    height: 480
+    fps: 15
+    input_format: MJPG
+  pipelines:
+  - type: driver_monitoring
+    backend: ultralytics
+    engine: artifacts/models/dms.pt
+    device: '0'
+    imgsz: 640
+    half: true
+    policy:
+      # First phone false-positive tuning trial; other class thresholds stay unchanged.
+      phone_min_confidence: 0.65
+      # Driver presence here means an accepted behavior, not a separate face detector.
+      face_classes: []
+      ignored_classes:
+      - smoking
+      - yawn
+      eyes_closed_classes: []
+      eyes_open_classes: []
+      drowsy_classes:
+      - drowsy
+      - head_drop
+      yawn_classes: []
+      phone_classes:
+      - phone
+      forward_classes:
+      - awake
+      away_classes:
+      - distracted
+      - head_drop
+optional_cameras:
+- camera_id: rear
+  source_id: jetson-cabin.rear
+  frame_id: camera_rear_optical
+  enabled: false
+  source:
+    type: gmsl
+    backend: argus
+    sensor_id: 0
+    width: 1280
+    height: 720
+    fps: 30
+audio:
+  enabled: true
+  source_id: jetson-cabin.audio
+  input: alsa
+  alsa_device: plughw:CARD=Webcam,DEV=0
+  # C922 is the current bench microphone. Actual STM32 UART is not confirmed.
+  device: null
+  baudrate: 921600
+  sample_rate_hz: 16000
+  channels: 1
+  sample_format: pcm_s16le
+  rolling_window_ms: 960
+  hop_ms: 100
+  backend: checkpoint
+  engine: artifacts/audio/initial_model/audio_event_best.pt
+  enable_horn: true
+  input_timeout_s: 3.0
+publish:
+  raw_video_over_dds: false
+  raw_audio_over_dds: false
+  driver_state_hz: 15
+health:
+  heartbeat_hz: 2
+  inference_deadline_ms: 100
+hmi_stream:
+  enabled: true
+  host: 0.0.0.0
+  port: 8082
+  width: 640
+  fps: 10
+  jpeg_quality: 70

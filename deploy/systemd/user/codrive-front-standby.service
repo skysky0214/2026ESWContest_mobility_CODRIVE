@@ -1,0 +1,18 @@
+[Unit]
+Description=CODRIVE Jetson 1 DDS communication with camera disabled
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ws/ESW2026-integration
+Environment=CODRIVE_LOG_TO_FILE=1
+ExecStartPre=/bin/bash %h/ws/ESW2026-integration/scripts/wait-wired-clock.sh enP8p1s0 192.168.50.21/24
+TimeoutStartSec=210
+ExecStart=/bin/bash %h/ws/ESW2026-integration/scripts/run-front-standby.sh
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

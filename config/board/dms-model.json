@@ -1,0 +1,17 @@
+{
+  "model": "artifacts/models/dms.pt",
+  "source_repository": "skskelwl/ESW2026",
+  "source_branch": "prototype",
+  "source_path": "models/dms.pt",
+  "git_blob_sha1": "ba42ee809944d96c4daf194c23f63e260a496ae0",
+  "sha256": "5a48bc82c6509270278c62eba50dc2eb6c6a14a336f3e70423020d3f02440304",
+  "classes": {
+    "0": "awake",
+    "1": "distracted",
+    "2": "drowsy",
+    "3": "head drop",
+    "4": "phone",
+    "5": "smoking",
+    "6": "yawn"
+  }
+}

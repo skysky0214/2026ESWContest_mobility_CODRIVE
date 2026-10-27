@@ -1,0 +1,30 @@
+{
+  "source_repository": "skskelwl/ESW2026",
+  "source_branch": "yyj",
+  "source_commit": "490e8194805aee3b50a5e69d1b6ec52812798850",
+  "model_path": "artifacts/audio/initial_model/audio_event_best.pt",
+  "sha256": "8fede2a9e06499ffb2c6714fd9f97cd177b36baaabf3e8cbd1fa70923616f9d0",
+  "metadata": {
+    "model_version": "audio-event-v1",
+    "feature_config": {
+      "sample_rate_hz": 16000,
+      "window_ms": 960,
+      "frame_ms": 25.0,
+      "frame_hop_ms": 10.0,
+      "n_fft": 512,
+      "n_mels": 64,
+      "target_frames": 96,
+      "f_min_hz": 50.0,
+      "f_max_hz": 8000.0,
+      "log_floor": 1e-10
+    },
+    "thresholds": [
+      0.8900000000000001,
+      0.63
+    ],
+    "target_names": [
+      "siren",
+      "horn"
+    ]
+  }
+}

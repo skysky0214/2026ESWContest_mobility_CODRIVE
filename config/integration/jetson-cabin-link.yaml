@@ -1,0 +1,14 @@
+schema_version: 1
+node_id: jetson-cabin.link
+role: communication_only
+camera_enabled: false
+dds:
+  domain_id: 42
+  config_uri: config/integration/cyclonedds-jetson2-wired.xml
+time_sync:
+  mode: chrony_client
+  server: 192.168.50.10
+  max_offset_ms: 5
+health:
+  heartbeat_hz: 2
+  expected_peers: [pi5.hmi, jetson-front]

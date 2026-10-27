@@ -1,0 +1,21 @@
+{
+  "version": 1,
+  "guid": "03004ed76d0400004fc2000000000000",
+  "device_name": "Logitech G HUB G29 Driving Force Racing Wheel USB",
+  "steering": {
+    "axis": 0,
+    "left": -1.0,
+    "center": 0.0,
+    "right": 0.999969482421875
+  },
+  "throttle": {
+    "axis": 1,
+    "rest": 0.999969482421875,
+    "pressed": -1.0
+  },
+  "brake": {
+    "axis": 2,
+    "rest": 0.999969482421875,
+    "pressed": -1.0
+  }
+}

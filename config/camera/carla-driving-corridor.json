@@ -1,0 +1,38 @@
+{
+  "calibration_file": "carla-front-rgb-ground.json",
+  "camera_id": "front",
+  "wheelbase_m": 2.5064960560065392,
+  "vehicle_half_width_m": 0.8943392634391785,
+  "vehicle_front_m": 1.8526854229345986,
+  "vehicle_rear_m": 1.8526840495690635,
+  "rear_axle_offset_m": 1.2562982994355474,
+  "safety_margin_m": 0.15,
+  "maximum_distance_m": 30.0,
+  "horizon_s": 4.0,
+  "step_s": 0.1,
+  "maximum_heading_rad": 1.2,
+  "steering_model": "carla_normalized",
+  "steering_full_scale_deg": 450.0,
+  "maximum_road_wheel_deg": 69.99999237060547,
+  "steering_curve_kmh": [
+    [
+      0.0,
+      1.0
+    ],
+    [
+      20.0,
+      0.8999999761581421
+    ],
+    [
+      60.0,
+      0.800000011920929
+    ],
+    [
+      120.0,
+      0.699999988079071
+    ]
+  ],
+  "steering_ratio": 14.25,
+  "description": "CARLA Audi A2 geometry from vehicle physics and bounding box. Object coordinates come only from camera pixels.",
+  "pedestrian_safety_margin_m": 0.69
+}

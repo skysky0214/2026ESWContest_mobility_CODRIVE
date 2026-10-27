@@ -1,0 +1,52 @@
+Panels: []
+Visualization Manager:
+  Class: ""
+  Displays:
+    - Class: rviz_default_plugins/Grid
+      Name: Ground Grid
+      Enabled: false
+      Plane: XY
+      Cell Size: 1
+      Plane Cell Count: 10
+      Reference Frame: <Fixed Frame>
+    - Class: rviz_default_plugins/MarkerArray
+      Name: Audio Event
+      Enabled: true
+      Topic:
+        Value: /codrive/audio/markers
+        Depth: 10
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+    - Class: rviz_default_plugins/Image
+      Name: Spectrogram (optional)
+      Enabled: false
+      Topic:
+        Value: /codrive/audio/spectrogram
+        Depth: 10
+        Reliability Policy: Reliable
+        Durability Policy: Volatile
+        History Policy: Keep Last
+      Normalize Range: true
+  Enabled: true
+  Global Options:
+    Background Color: 5; 8; 15
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz_default_plugins/Interact
+    - Class: rviz_default_plugins/MoveCamera
+    - Class: rviz_default_plugins/Select
+  Views:
+    Current:
+      Class: rviz_default_plugins/TopDownOrtho
+      Angle: 0
+      Scale: 80
+      X: 0
+      Y: 0
+Window Geometry:
+  Height: 900
+  Hide Left Dock: true
+  Hide Right Dock: true
+  Width: 1600

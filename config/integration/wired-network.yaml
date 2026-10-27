@@ -1,0 +1,15 @@
+schema_version: 1
+subnet: 192.168.50.0/24
+profile: codrive-lan
+gateway: null
+dds_domain: 42
+boards:
+  pi5:
+    address: 192.168.50.10/24
+    interface: eth0
+  jetson-front:
+    address: 192.168.50.21/24
+    interface: enP8p1s0
+  jetson-cabin:
+    address: 192.168.50.22/24
+    interface: enP8p1s0

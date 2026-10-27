@@ -1,0 +1,431 @@
+--- before/CODRIVE_ECU/Core/Src/main.c
++++ after/CODRIVE_ECU/Core/Src/main.c
+@@ -3,12 +3,13 @@
+ /**
+   ******************************************************************************
+   * @file    main.c
+-  * @brief   CODRIVE ECU - UART + FDCAN Loopback VehicleState
++  * @brief   CODRIVE ECU - UART + Classic CAN VehicleState (500 kbit/s)
+   ******************************************************************************
+   */
+ /* USER CODE END Header */
+ 
+ #include "main.h"
++#include <stdio.h>
+ 
+ /* Private typedef -----------------------------------------------------------*/
+ /* USER CODE BEGIN PTD */
+@@ -52,6 +53,27 @@
+ volatile uint32_t can_last_rx_id = 0;
+ volatile uint32_t can_last_hal_error = 0;
+ volatile uint32_t can_init_stage = 0;
++volatile uint32_t can_valid_rx_count = 0;
++volatile uint32_t can_invalid_frame_count = 0;
++volatile uint32_t can_unknown_id_count = 0;
++volatile uint32_t can_fifo_lost_count = 0;
++volatile uint32_t can_bus_off_count = 0;
++volatile uint32_t can_protocol_error_count = 0;
++volatile uint32_t can_bus_off = 0;
++volatile uint32_t can_last_protocol_error = 0;
++volatile uint32_t can_kernel_clock_hz = 0;
++volatile uint32_t can_nominal_bitrate = 0;
++volatile uint32_t can_speed_rx_count = 0;
++volatile uint32_t can_brake_rx_count = 0;
++volatile uint32_t can_steering_rx_count = 0;
++volatile uint32_t can_speed_last_ms = 0;
++volatile uint32_t can_brake_last_ms = 0;
++volatile uint32_t can_steering_last_ms = 0;
++volatile uint32_t can_tx_error_counter = 0;
++volatile uint32_t can_rx_error_counter = 0;
++volatile uint32_t telemetry_tx_count = 0;
++volatile uint32_t telemetry_skip_count = 0;
++static char telemetry_buffer[320];
+ 
+ static uint32_t can_last_test_ms = 0;
+ static uint16_t test_speed_raw = 0;
+@@ -69,6 +91,8 @@
+ static void CAN_Send(uint32_t id, const uint8_t data[8]);
+ static void CAN_ProcessRx(void);
+ static void CAN_SendTestData(void);
++static void CAN_CheckStatus(void);
++static void UART_SendVehicleTelemetry(void);
+ /* USER CODE END PFP */
+ 
+ /* USER CODE BEGIN 0 */
+@@ -132,6 +156,15 @@
+     FDCAN_FilterTypeDef filter = {0};
+ 
+     can_init_stage = 1;
++
++    can_kernel_clock_hz = HAL_RCCEx_GetPeriphCLKFreq(RCC_PERIPHCLK_FDCAN);
++    can_nominal_bitrate = can_kernel_clock_hz /
++        (hfdcan1.Init.NominalPrescaler *
++         (1U + hfdcan1.Init.NominalTimeSeg1 + hfdcan1.Init.NominalTimeSeg2));
++    if (can_kernel_clock_hz != 128000000U || can_nominal_bitrate != 500000U)
++    {
++        Error_Handler();
++    }
+ 
+     filter.IdType = FDCAN_STANDARD_ID;
+     filter.FilterIndex = 0;
+@@ -263,8 +296,10 @@
+ 
+         if (rx_header.IdType != FDCAN_STANDARD_ID ||
+             rx_header.RxFrameType != FDCAN_DATA_FRAME ||
+-            rx_header.DataLength != FDCAN_DLC_BYTES_8)
++            rx_header.DataLength != FDCAN_DLC_BYTES_8 ||
++            rx_header.FDFormat != FDCAN_CLASSIC_CAN)
+         {
++            can_invalid_frame_count++;
+             continue;
+         }
+ 
+@@ -278,15 +313,26 @@
+ 
+                 vehicle_state.speed_kph = raw * 0.01f;
+                 vehicle_state.last_update_ms = HAL_GetTick();
++                can_speed_last_ms = vehicle_state.last_update_ms;
++                can_speed_rx_count++;
++                can_valid_rx_count++;
+                 break;
+             }
+ 
+             case CAN_ID_BRAKE:
+             {
++                if (rx_data[0] > 1U)
++                {
++                    can_invalid_frame_count++;
++                    break;
++                }
+                 vehicle_state.brake_pressed =
+                     (rx_data[0] != 0U) ? 1U : 0U;
+ 
+                 vehicle_state.last_update_ms = HAL_GetTick();
++                can_brake_last_ms = vehicle_state.last_update_ms;
++                can_brake_rx_count++;
++                can_valid_rx_count++;
+                 break;
+             }
+ 
+@@ -305,12 +351,104 @@
+                     signed_raw * 0.1f;
+ 
+                 vehicle_state.last_update_ms = HAL_GetTick();
++                can_steering_last_ms = vehicle_state.last_update_ms;
++                can_steering_rx_count++;
++                can_valid_rx_count++;
+                 break;
+             }
+ 
+             default:
++                can_unknown_id_count++;
+                 break;
+         }
++    }
++}
++
++/* Poll status as well as FIFO; no second receive path or new UART protocol. */
++static void CAN_CheckStatus(void)
++{
++    static uint32_t last_check_ms = 0;
++    FDCAN_ProtocolStatusTypeDef status = {0};
++    FDCAN_ErrorCountersTypeDef counters = {0};
++
++    if (__HAL_FDCAN_GET_FLAG(&hfdcan1, FDCAN_FLAG_RX_FIFO0_MESSAGE_LOST))
++    {
++        __HAL_FDCAN_CLEAR_FLAG(&hfdcan1, FDCAN_FLAG_RX_FIFO0_MESSAGE_LOST);
++        can_fifo_lost_count++; /* Latched events, not an exact lost-frame count. */
++    }
++    if ((HAL_GetTick() - last_check_ms) < 100U)
++    {
++        return;
++    }
++    last_check_ms = HAL_GetTick();
++    if (HAL_FDCAN_GetProtocolStatus(&hfdcan1, &status) == HAL_OK)
++    {
++        if (status.BusOff && !can_bus_off)
++        {
++            can_bus_off_count++;
++        }
++        can_bus_off = status.BusOff;
++        if (status.LastErrorCode > 0U && status.LastErrorCode < 7U)
++        {
++            can_last_protocol_error = status.LastErrorCode;
++            can_protocol_error_count++; /* Error observations between status reads. */
++        }
++    }
++    else
++    {
++        can_rx_error_count++;
++        can_last_hal_error = HAL_FDCAN_GetError(&hfdcan1);
++    }
++    if (HAL_FDCAN_GetErrorCounters(&hfdcan1, &counters) == HAL_OK)
++    {
++        can_tx_error_counter = counters.TxErrorCnt;
++        can_rx_error_counter = counters.RxErrorCnt;
++    }
++}
++
++/* Nonblocking TX; UART RX interrupt and existing LED commands stay active.
++ * Static buffer is only overwritten once the previous TX has completed. */
++static void UART_SendVehicleTelemetry(void)
++{
++    static uint32_t last_ms = 0;
++    uint32_t now = HAL_GetTick();
++    int length;
++    int32_t steering_tenths;
++    if ((now - last_ms) < 200U)
++    {
++        return;
++    }
++    last_ms = now;
++    if (huart3.gState != HAL_UART_STATE_READY)
++    {
++        telemetry_skip_count++;
++        return;
++    }
++    steering_tenths = (int32_t)(vehicle_state.steering_deg * 10.0f +
++                         ((vehicle_state.steering_deg >= 0.0f) ? 0.5f : -0.5f));
++    length = snprintf(telemetry_buffer, sizeof(telemetry_buffer),
++        "ECU,ms=%lu,speed_raw=%lu,brake=%u,steer_raw=%ld,rx=%lu,valid=%lu,"
++        "speed_n=%lu,brake_n=%lu,steer_n=%lu,speed_ms=%lu,brake_ms=%lu,steer_ms=%lu,"
++        "err=%lu,invalid=%lu,lost=%lu,bo=%lu,lec=%lu\r\n",
++        (unsigned long)now,
++        (unsigned long)(vehicle_state.speed_kph * 100.0f + 0.5f),
++        (unsigned int)vehicle_state.brake_pressed, (long)steering_tenths,
++        (unsigned long)can_rx_count, (unsigned long)can_valid_rx_count,
++        (unsigned long)can_speed_rx_count, (unsigned long)can_brake_rx_count,
++        (unsigned long)can_steering_rx_count,
++        (unsigned long)can_speed_last_ms, (unsigned long)can_brake_last_ms,
++        (unsigned long)can_steering_last_ms,
++        (unsigned long)can_rx_error_count, (unsigned long)can_invalid_frame_count,
++        (unsigned long)can_fifo_lost_count, (unsigned long)can_bus_off,
++        (unsigned long)can_last_protocol_error);
++    if (length > 0 && (size_t)length < sizeof(telemetry_buffer) &&
++        HAL_UART_Transmit_IT(&huart3, (uint8_t *)telemetry_buffer, (uint16_t)length) == HAL_OK)
++    {
++        telemetry_tx_count++;
++    }
++    else
++    {
++        telemetry_skip_count++;
+     }
+ }
+ 
+@@ -341,13 +479,17 @@
+     {
+         CAN_ProcessRx();
+ 
+-        if ((HAL_GetTick() - can_last_test_ms) >= CAN_TEST_PERIOD_MS)
++        /* Never send loopback dummy values onto the real bus. */
++        if (hfdcan1.Init.Mode == FDCAN_MODE_INTERNAL_LOOPBACK &&
++            (HAL_GetTick() - can_last_test_ms) >= CAN_TEST_PERIOD_MS)
+         {
+             can_last_test_ms = HAL_GetTick();
+             CAN_SendTestData();
+         }
+ 
+         CAN_ProcessRx();
++        CAN_CheckStatus();
++        UART_SendVehicleTelemetry();
+     }
+     /* USER CODE END WHILE */
+ }
+@@ -371,7 +513,7 @@
+     RCC_OscInitStruct.PLL.PLLState = RCC_PLL_ON;
+     RCC_OscInitStruct.PLL.PLLSource = RCC_PLLSOURCE_HSI;
+     RCC_OscInitStruct.PLL.PLLM = 32;
+-    RCC_OscInitStruct.PLL.PLLN = 129;
++    RCC_OscInitStruct.PLL.PLLN = 128;
+     RCC_OscInitStruct.PLL.PLLP = 2;
+     RCC_OscInitStruct.PLL.PLLQ = 2;
+     RCC_OscInitStruct.PLL.PLLR = 2;
+@@ -412,7 +554,7 @@
+ {
+     hfdcan1.Instance = FDCAN1;
+     hfdcan1.Init.FrameFormat = FDCAN_FRAME_CLASSIC;
+-    hfdcan1.Init.Mode = FDCAN_MODE_INTERNAL_LOOPBACK;
++    hfdcan1.Init.Mode = FDCAN_MODE_NORMAL;
+     hfdcan1.Init.AutoRetransmission = DISABLE;
+     hfdcan1.Init.TransmitPause = DISABLE;
+     hfdcan1.Init.ProtocolException = DISABLE;
+--- before/CODRIVE_ECU/CODRIVE_ECU.ioc
++++ after/CODRIVE_ECU/CODRIVE_ECU.ioc
+@@ -3,11 +3,16 @@
+ CAD.formats=
+ CAD.pinconfig=
+ CAD.provider=
+-FDCAN1.CalculateBaudRateNominal=503906
+-FDCAN1.CalculateTimeBitNominal=1984
+-FDCAN1.CalculateTimeQuantumNominal=31.007751937984494
+-FDCAN1.IPParameters=CalculateTimeQuantumNominal,CalculateTimeBitNominal,CalculateBaudRateNominal,Mode,StdFiltersNbr,RxFifo0ElmtsNbr,NominalPrescaler,NominalTimeSeg1,NominalTimeSeg2
+-FDCAN1.Mode=FDCAN_MODE_INTERNAL_LOOPBACK
++FDCAN1.CalculateBaudRateNominal=500000
++FDCAN1.CalculateTimeBitNominal=2000
++FDCAN1.CalculateTimeQuantumNominal=31.25
++FDCAN1.IPParameters=CalculateTimeQuantumNominal,CalculateTimeBitNominal,CalculateBaudRateNominal,Mode,StdFiltersNbr,RxFifo0ElmtsNbr,NominalPrescaler,NominalTimeSeg1,NominalTimeSeg2,FrameFormat,RxFifo0ElmtSize,TxFifoQueueElmtsNbr,TxFifoQueueMode,TxElmtSize
++FDCAN1.FrameFormat=FDCAN_FRAME_CLASSIC
++FDCAN1.RxFifo0ElmtSize=FDCAN_DATA_BYTES_8
++FDCAN1.TxFifoQueueElmtsNbr=3
++FDCAN1.TxFifoQueueMode=FDCAN_TX_FIFO_OPERATION
++FDCAN1.TxElmtSize=FDCAN_DATA_BYTES_8
++FDCAN1.Mode=FDCAN_MODE_NORMAL
+ FDCAN1.NominalPrescaler=4
+ FDCAN1.NominalTimeSeg1=56
+ FDCAN1.NominalTimeSeg2=7
+@@ -104,7 +109,7 @@
+ ProjectManager.UAScriptBeforePath=
+ ProjectManager.UnderRoot=true
+ ProjectManager.functionlistsort=1-SystemClock_Config-RCC-false-HAL-false,2-MX_GPIO_Init-GPIO-false-HAL-true,3-MX_USART3_UART_Init-USART3-false-HAL-true,0-MX_CORTEX_M7_Init-CORTEX_M7-false-HAL-true
+-RCC.ADCFreq_Value=129000000
++RCC.ADCFreq_Value=128000000
+ RCC.AHB12Freq_Value=64000000
+ RCC.AHB4Freq_Value=64000000
+ RCC.APB1Freq_Value=64000000
+@@ -117,41 +122,42 @@
+ RCC.CortexFreq_Value=64000000
+ RCC.CpuClockFreq_Value=64000000
+ RCC.D1CPREFreq_Value=64000000
+-RCC.DFSDMACLkFreq_Value=129000000
++RCC.DFSDMACLkFreq_Value=128000000
+ RCC.DFSDMFreq_Value=64000000
+-RCC.DIVP1Freq_Value=129000000
+-RCC.DIVP2Freq_Value=129000000
+-RCC.DIVP3Freq_Value=129000000
+-RCC.DIVQ1Freq_Value=129000000
+-RCC.DIVQ2Freq_Value=129000000
+-RCC.DIVQ3Freq_Value=129000000
+-RCC.DIVR1Freq_Value=129000000
+-RCC.DIVR2Freq_Value=129000000
+-RCC.DIVR3Freq_Value=129000000
+-RCC.FDCANFreq_Value=129000000
++RCC.DIVP1Freq_Value=128000000
++RCC.DIVP2Freq_Value=128000000
++RCC.DIVP3Freq_Value=128000000
++RCC.DIVQ1Freq_Value=128000000
++RCC.DIVQ2Freq_Value=128000000
++RCC.DIVQ3Freq_Value=128000000
++RCC.DIVR1Freq_Value=128000000
++RCC.DIVR2Freq_Value=128000000
++RCC.DIVR3Freq_Value=128000000
++RCC.FDCANFreq_Value=128000000
+ RCC.FMCFreq_Value=64000000
+ RCC.FamilyName=M
+ RCC.HCLK3ClockFreq_Value=64000000
+ RCC.HCLKFreq_Value=64000000
+ RCC.I2C123Freq_Value=64000000
+ RCC.I2C4Freq_Value=64000000
+-RCC.IPParameters=ADCFreq_Value,AHB12Freq_Value,AHB4Freq_Value,APB1Freq_Value,APB2Freq_Value,APB3Freq_Value,APB4Freq_Value,AXIClockFreq_Value,CECFreq_Value,CKPERFreq_Value,CortexFreq_Value,CpuClockFreq_Value,D1CPREFreq_Value,DFSDMACLkFreq_Value,DFSDMFreq_Value,DIVP1Freq_Value,DIVP2Freq_Value,DIVP3Freq_Value,DIVQ1Freq_Value,DIVQ2Freq_Value,DIVQ3Freq_Value,DIVR1Freq_Value,DIVR2Freq_Value,DIVR3Freq_Value,FDCANFreq_Value,FMCFreq_Value,FamilyName,HCLK3ClockFreq_Value,HCLKFreq_Value,I2C123Freq_Value,I2C4Freq_Value,LPTIM1Freq_Value,LPTIM2Freq_Value,LPTIM345Freq_Value,LPUART1Freq_Value,LTDCFreq_Value,MCO1PinFreq_Value,MCO2PinFreq_Value,QSPIFreq_Value,RNGFreq_Value,RTCFreq_Value,SAI1Freq_Value,SAI4AFreq_Value,SAI4BFreq_Value,SDMMCFreq_Value,SPDIFRXFreq_Value,SPI123Freq_Value,SPI45Freq_Value,SPI6Freq_Value,SWPMI1Freq_Value,SYSCLKFreq_VALUE,Tim1OutputFreq_Value,Tim2OutputFreq_Value,TraceFreq_Value,USART16Freq_Value,USART234578Freq_Value,USBFreq_Value,VCO1OutputFreq_Value,VCO2OutputFreq_Value,VCO3OutputFreq_Value,VCOInput1Freq_Value,VCOInput2Freq_Value,VCOInput3Freq_Value
++RCC.IPParameters=PLLN,ADCFreq_Value,AHB12Freq_Value,AHB4Freq_Value,APB1Freq_Value,APB2Freq_Value,APB3Freq_Value,APB4Freq_Value,AXIClockFreq_Value,CECFreq_Value,CKPERFreq_Value,CortexFreq_Value,CpuClockFreq_Value,D1CPREFreq_Value,DFSDMACLkFreq_Value,DFSDMFreq_Value,DIVP1Freq_Value,DIVP2Freq_Value,DIVP3Freq_Value,DIVQ1Freq_Value,DIVQ2Freq_Value,DIVQ3Freq_Value,DIVR1Freq_Value,DIVR2Freq_Value,DIVR3Freq_Value,FDCANFreq_Value,FMCFreq_Value,FamilyName,HCLK3ClockFreq_Value,HCLKFreq_Value,I2C123Freq_Value,I2C4Freq_Value,LPTIM1Freq_Value,LPTIM2Freq_Value,LPTIM345Freq_Value,LPUART1Freq_Value,LTDCFreq_Value,MCO1PinFreq_Value,MCO2PinFreq_Value,QSPIFreq_Value,RNGFreq_Value,RTCFreq_Value,SAI1Freq_Value,SAI4AFreq_Value,SAI4BFreq_Value,SDMMCFreq_Value,SPDIFRXFreq_Value,SPI123Freq_Value,SPI45Freq_Value,SPI6Freq_Value,SWPMI1Freq_Value,SYSCLKFreq_VALUE,Tim1OutputFreq_Value,Tim2OutputFreq_Value,TraceFreq_Value,USART16Freq_Value,USART234578Freq_Value,USBFreq_Value,VCO1OutputFreq_Value,VCO2OutputFreq_Value,VCO3OutputFreq_Value,VCOInput1Freq_Value,VCOInput2Freq_Value,VCOInput3Freq_Value
++RCC.PLLN=128
+ RCC.LPTIM1Freq_Value=64000000
+ RCC.LPTIM2Freq_Value=64000000
+ RCC.LPTIM345Freq_Value=64000000
+ RCC.LPUART1Freq_Value=64000000
+-RCC.LTDCFreq_Value=129000000
++RCC.LTDCFreq_Value=128000000
+ RCC.MCO1PinFreq_Value=64000000
+ RCC.MCO2PinFreq_Value=64000000
+ RCC.QSPIFreq_Value=64000000
+ RCC.RNGFreq_Value=48000000
+ RCC.RTCFreq_Value=32000
+-RCC.SAI1Freq_Value=129000000
+-RCC.SAI4AFreq_Value=129000000
+-RCC.SAI4BFreq_Value=129000000
+-RCC.SDMMCFreq_Value=129000000
+-RCC.SPDIFRXFreq_Value=129000000
+-RCC.SPI123Freq_Value=129000000
++RCC.SAI1Freq_Value=128000000
++RCC.SAI4AFreq_Value=128000000
++RCC.SAI4BFreq_Value=128000000
++RCC.SDMMCFreq_Value=128000000
++RCC.SPDIFRXFreq_Value=128000000
++RCC.SPI123Freq_Value=128000000
+ RCC.SPI45Freq_Value=64000000
+ RCC.SPI6Freq_Value=64000000
+ RCC.SWPMI1Freq_Value=64000000
+@@ -161,10 +167,10 @@
+ RCC.TraceFreq_Value=64000000
+ RCC.USART16Freq_Value=64000000
+ RCC.USART234578Freq_Value=64000000
+-RCC.USBFreq_Value=129000000
+-RCC.VCO1OutputFreq_Value=258000000
+-RCC.VCO2OutputFreq_Value=258000000
+-RCC.VCO3OutputFreq_Value=258000000
++RCC.USBFreq_Value=128000000
++RCC.VCO1OutputFreq_Value=256000000
++RCC.VCO2OutputFreq_Value=256000000
++RCC.VCO3OutputFreq_Value=256000000
+ RCC.VCOInput1Freq_Value=2000000
+ RCC.VCOInput2Freq_Value=2000000
+ RCC.VCOInput3Freq_Value=2000000
+
+--- before-d14-d15/Core/Src/stm32h7xx_hal_msp.c
++++ after-d14-d15/Core/Src/stm32h7xx_hal_msp.c
+@@ -90,17 +90,17 @@
+     /* Peripheral clock enable */
+     __HAL_RCC_FDCAN_CLK_ENABLE();
+ 
+-    __HAL_RCC_GPIOA_CLK_ENABLE();
++    __HAL_RCC_GPIOB_CLK_ENABLE();
+     /**FDCAN1 GPIO Configuration
+-    PA11     ------> FDCAN1_RX
+-    PA12     ------> FDCAN1_TX
+-    */
+-    GPIO_InitStruct.Pin = GPIO_PIN_11|GPIO_PIN_12;
++    PB8 (D15) ------> FDCAN1_RX
++    PB9 (D14) ------> FDCAN1_TX
++    */
++    GPIO_InitStruct.Pin = GPIO_PIN_8|GPIO_PIN_9;
+     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
+     GPIO_InitStruct.Pull = GPIO_NOPULL;
+     GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+     GPIO_InitStruct.Alternate = GPIO_AF9_FDCAN1;
+-    HAL_GPIO_Init(GPIOA, &GPIO_InitStruct);
++    HAL_GPIO_Init(GPIOB, &GPIO_InitStruct);
+ 
+     /* FDCAN1 interrupt Init */
+     HAL_NVIC_SetPriority(FDCAN1_IT0_IRQn, 0, 0);
+@@ -130,10 +130,10 @@
+     __HAL_RCC_FDCAN_CLK_DISABLE();
+ 
+     /**FDCAN1 GPIO Configuration
+-    PA11     ------> FDCAN1_RX
+-    PA12     ------> FDCAN1_TX
+-    */
+-    HAL_GPIO_DeInit(GPIOA, GPIO_PIN_11|GPIO_PIN_12);
++    PB8 (D15) ------> FDCAN1_RX
++    PB9 (D14) ------> FDCAN1_TX
++    */
++    HAL_GPIO_DeInit(GPIOB, GPIO_PIN_8|GPIO_PIN_9);
+ 
+     /* FDCAN1 interrupt DeInit */
+     HAL_NVIC_DisableIRQ(FDCAN1_IT0_IRQn);
+--- before-d14-d15/CODRIVE_ECU.ioc
++++ after-d14-d15/CODRIVE_ECU.ioc
+@@ -40,8 +40,8 @@
+ Mcu.Pin0=PB0
+ Mcu.Pin1=PD8
+ Mcu.Pin2=PD9
+-Mcu.Pin3=PA11
+-Mcu.Pin4=PA12
++Mcu.Pin3=PB8
++Mcu.Pin4=PB9
+ Mcu.Pin5=VP_SYS_VS_Systick
+ Mcu.Pin6=VP_MEMORYMAP_VS_MEMORYMAP
+ Mcu.PinsNb=7
+@@ -63,10 +63,10 @@
+ NVIC.SysTick_IRQn=true\:15\:0\:false\:false\:true\:false\:true\:false
+ NVIC.USART3_IRQn=true\:0\:0\:false\:false\:true\:true\:true\:true
+ NVIC.UsageFault_IRQn=true\:0\:0\:false\:false\:true\:false\:false\:false
+-PA11.Mode=FDCAN_Activate
+-PA11.Signal=FDCAN1_RX
+-PA12.Mode=FDCAN_Activate
+-PA12.Signal=FDCAN1_TX
++PB8.Mode=FDCAN_Activate
++PB8.Signal=FDCAN1_RX
++PB9.Mode=FDCAN_Activate
++PB9.Signal=FDCAN1_TX
+ PB0.Locked=true
+ PB0.Signal=GPIO_Output
+ PD8.Locked=true

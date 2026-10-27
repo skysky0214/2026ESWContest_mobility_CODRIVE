@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "pedestrian-lane",
+  "name": "① 보행자 횡단 + 좌측 차선 이탈",
+  "map": "Town10HD_Opt",
+  "spawn_index": 10,
+  "crossing_forward_m": 45.0,
+  "lateral_start_m": -3.0,
+  "lateral_end_m": 3.0,
+  "pedestrian_speed_mps": 2.5,
+  "trigger_ttc_s": 1.2,
+  "trigger_max_distance_m": 25.0,
+  "minimum_speed_kmh": 5.0,
+  "recommended_speed_kmh": 40.0,
+  "pedestrian_blueprint": "walker.pedestrian.0001",
+  "trigger_mode": "distance",
+  "trigger_distance_m": 16.0,
+  "trigger_lateral_tolerance_m": 5.0,
+  "kind": "pedestrian_lane",
+  "instructions": "보행자 횡단이 시작되면 왼쪽으로 조금 조향하세요. 횡단 중 차선 중심 대비 좌측 0.55m 이상 편위가 겹치는지 기록합니다. 정차·엑셀 해제 후 R키로 반복하세요.",
+  "lane_warning_offset_m": 0.55,
+  "clear_roadside_parked_vehicles": true
+}

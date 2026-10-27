@@ -1,0 +1,342 @@
+{
+  "disclaimer": "Synthetic-data research/demo model; not validated for real vehicle safety control.",
+  "evaluation_scope": "Agreement with current RuleEngine labels on held-out synthetic sessions; NOT real-driving accuracy or accident probability",
+  "samples": 10000,
+  "sessions": 200,
+  "seed": 20261026,
+  "split_method": "session-disjoint 70/15/15; no row-level random split",
+  "raw_features": 36,
+  "sensor_features": 28,
+  "validity_features": 8,
+  "encoded_features": 52,
+  "training_seconds": 0.6205979720689356,
+  "boosting_rounds": 299,
+  "best_iteration": 298,
+  "split_metrics": {
+    "train": {
+      "rows": 7000,
+      "accuracy": 1.0,
+      "macro_f1": 1.0,
+      "log_loss": 0.009494500234723091,
+      "confusion_matrix": [
+        [
+          1494,
+          0,
+          0
+        ],
+        [
+          0,
+          1956,
+          0
+        ],
+        [
+          0,
+          0,
+          3550
+        ]
+      ],
+      "confusion_order": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "per_class": {
+        "LOW": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1494
+        },
+        "MEDIUM": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 1956
+        },
+        "HIGH": {
+          "precision": 1.0,
+          "recall": 1.0,
+          "f1": 1.0,
+          "support": 3550
+        }
+      }
+    },
+    "validation": {
+      "rows": 1500,
+      "accuracy": 0.9573333333333334,
+      "macro_f1": 0.9479017029722554,
+      "log_loss": 0.09594714641571045,
+      "confusion_matrix": [
+        [
+          437,
+          0,
+          0
+        ],
+        [
+          48,
+          290,
+          1
+        ],
+        [
+          15,
+          0,
+          709
+        ]
+      ],
+      "confusion_order": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "per_class": {
+        "LOW": {
+          "precision": 0.874,
+          "recall": 1.0,
+          "f1": 0.9327641408751334,
+          "support": 437
+        },
+        "MEDIUM": {
+          "precision": 1.0,
+          "recall": 0.855457227138643,
+          "f1": 0.9220985691573927,
+          "support": 339
+        },
+        "HIGH": {
+          "precision": 0.9985915492957746,
+          "recall": 0.9792817679558011,
+          "f1": 0.9888423988842399,
+          "support": 724
+        }
+      }
+    },
+    "test": {
+      "rows": 1500,
+      "accuracy": 0.978,
+      "macro_f1": 0.9813032386379489,
+      "log_loss": 0.04906795173883438,
+      "confusion_matrix": [
+        [
+          306,
+          0,
+          1
+        ],
+        [
+          0,
+          578,
+          32
+        ],
+        [
+          0,
+          0,
+          583
+        ]
+      ],
+      "confusion_order": [
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ],
+      "per_class": {
+        "LOW": {
+          "precision": 1.0,
+          "recall": 0.996742671009772,
+          "f1": 0.99836867862969,
+          "support": 307
+        },
+        "MEDIUM": {
+          "precision": 1.0,
+          "recall": 0.9475409836065574,
+          "f1": 0.9730639730639731,
+          "support": 610
+        },
+        "HIGH": {
+          "precision": 0.9464285714285714,
+          "recall": 1.0,
+          "f1": 0.9724770642201834,
+          "support": 583
+        }
+      }
+    }
+  },
+  "session_counts": {
+    "train": 140,
+    "validation": 30,
+    "test": 30
+  },
+  "class_counts": {
+    "train": {
+      "LOW": 1494,
+      "HIGH": 3550,
+      "MEDIUM": 1956
+    },
+    "validation": {
+      "LOW": 437,
+      "MEDIUM": 339,
+      "HIGH": 724
+    },
+    "test": {
+      "MEDIUM": 610,
+      "LOW": 307,
+      "HIGH": 583
+    }
+  },
+  "scenario_counts": {
+    "normal": 750,
+    "objects": 750,
+    "stop_sign": 750,
+    "phone": 750,
+    "drowsy": 700,
+    "head_drop": 700,
+    "distracted": 700,
+    "siren": 700,
+    "horn": 700,
+    "red": 700,
+    "yellow": 700,
+    "rapid_acceleration": 700,
+    "rapid_pedal": 700,
+    "mixed": 700
+  },
+  "null_counts": {
+    "pedestrian_count": 269,
+    "vehicle_count": 269,
+    "bicycle_count": 269,
+    "motorcycle_count": 269,
+    "stop_sign_detected": 269,
+    "central_object_present": 269,
+    "max_bbox_area": 269,
+    "traffic_light": 2477,
+    "driver_behavior": 257,
+    "attention_score": 257,
+    "drowsiness_score": 257,
+    "looking_forward": 257,
+    "phone_detected": 257,
+    "behavior_duration_ms": 257,
+    "audio_kind": 200,
+    "audio_direction": 8280,
+    "speed_mps": 200,
+    "accelerator_pct": 440,
+    "brake_pressed": 440,
+    "speed_accel_mps2": 425,
+    "accelerator_rate_pct_s": 705,
+    "acceleration_duration_ms": 425,
+    "pedal_rate_duration_ms": 705,
+    "weather": 520,
+    "is_night": 200,
+    "precipitation_mm_h": 520,
+    "snowfall_cm_h": 520,
+    "visibility_m": 520
+  },
+  "validity_counts": {
+    "front_valid": {
+      "True": 9731,
+      "False": 269
+    },
+    "driver_valid": {
+      "True": 9743,
+      "False": 257
+    },
+    "audio_valid": {
+      "True": 9800,
+      "False": 200
+    },
+    "speed_valid": {
+      "True": 9800,
+      "False": 200
+    },
+    "pedal_valid": {
+      "True": 9560,
+      "False": 440
+    },
+    "brake_valid": {
+      "True": 9560,
+      "False": 440
+    },
+    "weather_valid": {
+      "True": 9480,
+      "False": 520
+    },
+    "daylight_valid": {
+      "True": 9800,
+      "False": 200
+    }
+  },
+  "feature_gain": {
+    "traffic_light_RED": 10.793521881103516,
+    "traffic_light_YELLOW": 8.226430892944336,
+    "traffic_light_GREEN": 9.657478332519531,
+    "traffic_light_OFF": 10.082948684692383,
+    "driver_behavior_awake": 34.147823333740234,
+    "driver_behavior_phone": 1.0000087022781372,
+    "driver_behavior_drowsy": 3.743889331817627,
+    "driver_behavior_head_drop": 8.665495872497559,
+    "driver_behavior_distracted": 3.2955102920532227,
+    "audio_kind_none": 13.010397911071777,
+    "audio_kind_siren": 53.76313400268555,
+    "audio_kind_horn": 25.398460388183594,
+    "audio_kind_other": 8.922971725463867,
+    "audio_direction_left": 28.12325668334961,
+    "audio_direction_right": 18.390182495117188,
+    "weather_CLEAR": 2.0004773139953613,
+    "weather_CLOUDY": 1.7705457210540771,
+    "weather_RAIN": 3.6081082820892334,
+    "weather_SNOW": 5.813260078430176,
+    "weather_FOG": 10.213204383850098,
+    "weather_THUNDER": 4.1566267013549805,
+    "pedestrian_count": 1.7285369634628296,
+    "vehicle_count": 7.10037899017334,
+    "bicycle_count": 5.3732523918151855,
+    "motorcycle_count": 1.1389857530593872,
+    "max_bbox_area": 17.50874900817871,
+    "attention_score": 18.211746215820312,
+    "drowsiness_score": 0.16483575105667114,
+    "behavior_duration_ms": 1.2647838592529297,
+    "speed_mps": 18.114931106567383,
+    "accelerator_pct": 8.492781639099121,
+    "speed_accel_mps2": 10.731613159179688,
+    "accelerator_rate_pct_s": 1.0373449325561523,
+    "acceleration_duration_ms": 20.616680145263672,
+    "pedal_rate_duration_ms": 6.160355567932129,
+    "precipitation_mm_h": 4.913735389709473,
+    "snowfall_cm_h": 2.548022747039795,
+    "visibility_m": 3.7895946502685547,
+    "stop_sign_detected": 16.346214294433594,
+    "central_object_present": 38.61548614501953,
+    "looking_forward": 28.441638946533203,
+    "phone_detected": 6.9255523681640625,
+    "brake_pressed": 7.432897567749023,
+    "is_night": 1.3236397504806519,
+    "front_valid": 0.0,
+    "driver_valid": 0.0,
+    "audio_valid": 0.0,
+    "speed_valid": 0.9330878853797913,
+    "pedal_valid": 0.0,
+    "brake_valid": 0.47987842559814453,
+    "weather_valid": 0.0,
+    "daylight_valid": 0.0
+  },
+  "unused_encoded_features": [
+    "front_valid",
+    "driver_valid",
+    "audio_valid",
+    "pedal_valid",
+    "weather_valid",
+    "daylight_valid"
+  ],
+  "direction_note": "The teacher assigns equal risk to left/right. Inference averages mirrored directional predictions to enforce equal risk; warning templates retain the actual direction. Raw tree gain is not causal attribution.",
+  "limits": [
+    "Synthetic rule imitation; not independent safety evidence",
+    "Only generated scenarios and failure patterns were evaluated",
+    "CRITICAL and WARNING both map to HIGH; rule CRITICAL priority remains",
+    "No lane, TTC/ranging, steering, rapid-launch or unintended-acceleration diagnosis",
+    "Real audio direction estimator and CARLA/CAN adapter are separate producers"
+  ],
+  "inference_benchmark": {
+    "host": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+    "architecture": "x86_64",
+    "iterations": 1000,
+    "p50_ms": 0.14402749999999997,
+    "p95_ms": 0.22937059999999998,
+    "max_ms": 0.31838,
+    "scope": "Host-only CPU predictor, one thread; not a Raspberry Pi measurement"
+  }
+}

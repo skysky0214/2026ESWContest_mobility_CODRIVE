@@ -1,0 +1,2 @@
+# EQ900 reference CANable 2 SLCAN; grant only this adapter's serial node to Pi HMI user.
+SUBSYSTEM=="tty", ATTRS{idVendor}=="16d0", ATTRS{idProduct}=="117e", OWNER="rp", GROUP="dialout", MODE="0660"

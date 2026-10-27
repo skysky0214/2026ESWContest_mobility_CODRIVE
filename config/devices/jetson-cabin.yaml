@@ -1,0 +1,58 @@
+schema_version: 1
+node_id: jetson-cabin
+role: cabin_audio_perception
+dds:
+  domain_id: 42
+  interface: eth0
+  config_uri: config/cyclonedds.xml
+time_sync:
+  mode: ptp_slave
+  max_offset_ms: 5
+cameras:
+  - camera_id: cabin
+    source_id: jetson-cabin.dms
+    frame_id: camera_cabin_optical
+    source:
+      type: usb
+      backend: v4l2
+      device: /dev/video0
+      width: 640
+      height: 480
+      fps: 15
+      input_format: MJPG
+    pipelines:
+      - type: driver_monitoring
+        backend: tensorrt
+        engine: artifacts/models/dms.engine
+# Optional rear/side GMSL camera. Enable only if physically connected to this carrier.
+optional_cameras:
+  - camera_id: rear
+    source_id: jetson-cabin.rear
+    frame_id: camera_rear_optical
+    enabled: false
+    source:
+      type: gmsl
+      backend: argus
+      sensor_id: 0
+      width: 1280
+      height: 720
+      fps: 30
+audio:
+  enabled: true
+  source_id: jetson-cabin.audio
+  device: /dev/ttyTHS0
+  baudrate: 921600
+  sample_rate_hz: 16000
+  channels: 1
+  sample_format: pcm_s16le
+  rolling_window_ms: 960
+  hop_ms: 100
+  backend: tensorrt
+  engine: artifacts/models/audio/audio_event.engine
+publish:
+  raw_video_over_dds: false
+  raw_audio_over_dds: false
+  driver_state_hz: 15
+health:
+  heartbeat_hz: 2
+  inference_deadline_ms: 100

@@ -1,0 +1,71 @@
+{
+  "name": "Logitech G29 Driving Force Racing Wheel",
+  "guid": "0300f04c6d0400004fc2000011010000",
+  "axis_codes": [
+    0,
+    1,
+    2,
+    5
+  ],
+  "mapping_source": "Isolated physical exercises confirmed steering axis 0, accelerator axis 2, brake axis 3 on 2026-10-21",
+  "steering": {
+    "axis": 0,
+    "left": -1.0,
+    "center": 0.0,
+    "right": 1.0,
+    "deadzone": 0.015,
+    "max_degrees": 450.0,
+    "center_source": "Native G29 midpoint confirmed by low-strength FF_AUTOCENTER on 2026-10-21; removed temporary manual offset",
+    "endpoint_note": "Raw -1/+1 limits observed earlier; physical angle accuracy and symmetry not yet verified"
+  },
+  "throttle": {
+    "axis": 2,
+    "released": 1.0,
+    "pressed": -1.0,
+    "deadzone": 0.03
+  },
+  "brake": {
+    "axis": 3,
+    "released": 1.0,
+    "pressed": -1.0,
+    "deadzone": 0.03
+  },
+  "physical_verified": true,
+  "reverse_toggle": {
+    "type": "g29_button",
+    "button": 0,
+    "label": "G29 button 0"
+  },
+  "autocenter": {
+    "enabled": true,
+    "strength_percent": 32,
+    "gain_percent": 75,
+    "speed_sensitive": true,
+    "speed_curve_kmh": [
+      [
+        0,
+        32
+      ],
+      [
+        10,
+        35
+      ],
+      [
+        30,
+        38
+      ],
+      [
+        60,
+        40
+      ],
+      [
+        100,
+        40
+      ]
+    ],
+    "slew_percent_s": 8
+  },
+  "driving": {
+    "throttle_exponent": 1.5
+  }
+}

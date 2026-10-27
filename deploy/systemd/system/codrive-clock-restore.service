@@ -1,0 +1,17 @@
+[Unit]
+Description=Restore saved Jetson clock after PMIC RTC initialization
+DefaultDependencies=no
+After=local-fs.target systemd-udev-trigger.service
+Before=sysinit.target time-set.target chrony.service shutdown.target
+Wants=time-set.target
+Conflicts=shutdown.target
+RequiresMountsFor=/var/lib/codrive-clock
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/python3 /usr/local/libexec/codrive-clock.py restore --wait-rtc
+TimeoutStartSec=40
+RemainAfterExit=yes
+
+[Install]
+WantedBy=sysinit.target

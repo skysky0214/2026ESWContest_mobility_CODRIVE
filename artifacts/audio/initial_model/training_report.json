@@ -1,0 +1,183 @@
+{
+  "checkpoint": "artifacts/audio/initial_model/audio_event_best.pt",
+  "elapsed_s": 867.2950904479985,
+  "sample_counts": {
+    "train": 5000,
+    "tune": 1000,
+    "final_test": 1000
+  },
+  "best_epoch": 5,
+  "tune_loss": 0.14902935829013586,
+  "test_loss": 0.139574961271137,
+  "thresholds": [
+    0.8900000000000001,
+    0.63
+  ],
+  "final_test_metrics": {
+    "siren": {
+      "threshold": 0.8900000000000001,
+      "precision": 0.958904109589041,
+      "recall": 0.8860759493670886,
+      "f1": 0.9210526315789473,
+      "true_positive": 70,
+      "false_positive": 3,
+      "false_negative": 9
+    },
+    "horn": {
+      "threshold": 0.63,
+      "precision": 0.9584664536741214,
+      "recall": 0.9584664536741214,
+      "f1": 0.9584664536741214,
+      "true_positive": 300,
+      "false_positive": 13,
+      "false_negative": 13
+    }
+  },
+  "history": [
+    {
+      "epoch": 1,
+      "train_loss": 0.7680564507653441,
+      "tune_loss": 0.31948257982730865,
+      "thresholds": [
+        0.8900000000000001,
+        0.75
+      ],
+      "metrics": {
+        "siren": {
+          "threshold": 0.8900000000000001,
+          "precision": 0.873015873015873,
+          "recall": 0.7534246575342466,
+          "f1": 0.8088235294117647,
+          "true_positive": 55,
+          "false_positive": 8,
+          "false_negative": 18
+        },
+        "horn": {
+          "threshold": 0.75,
+          "precision": 0.9242424242424242,
+          "recall": 0.8683274021352313,
+          "f1": 0.8954128440366972,
+          "true_positive": 244,
+          "false_positive": 20,
+          "false_negative": 37
+        }
+      }
+    },
+    {
+      "epoch": 2,
+      "train_loss": 0.4060141523427601,
+      "tune_loss": 0.2238045111298561,
+      "thresholds": [
+        0.95,
+        0.79
+      ],
+      "metrics": {
+        "siren": {
+          "threshold": 0.95,
+          "precision": 0.90625,
+          "recall": 0.7945205479452054,
+          "f1": 0.8467153284671532,
+          "true_positive": 58,
+          "false_positive": 6,
+          "false_negative": 15
+        },
+        "horn": {
+          "threshold": 0.79,
+          "precision": 0.9527272727272728,
+          "recall": 0.9323843416370107,
+          "f1": 0.9424460431654677,
+          "true_positive": 262,
+          "false_positive": 13,
+          "false_negative": 19
+        }
+      }
+    },
+    {
+      "epoch": 3,
+      "train_loss": 0.3042949541837354,
+      "tune_loss": 0.19527259189635515,
+      "thresholds": [
+        0.9299999999999999,
+        0.65
+      ],
+      "metrics": {
+        "siren": {
+          "threshold": 0.9299999999999999,
+          "precision": 0.8513513513513513,
+          "recall": 0.863013698630137,
+          "f1": 0.8571428571428572,
+          "true_positive": 63,
+          "false_positive": 11,
+          "false_negative": 10
+        },
+        "horn": {
+          "threshold": 0.65,
+          "precision": 0.9442508710801394,
+          "recall": 0.9644128113879004,
+          "f1": 0.9542253521126761,
+          "true_positive": 271,
+          "false_positive": 16,
+          "false_negative": 10
+        }
+      }
+    },
+    {
+      "epoch": 4,
+      "train_loss": 0.2750036410893066,
+      "tune_loss": 0.15732915746048093,
+      "thresholds": [
+        0.8,
+        0.9099999999999999
+      ],
+      "metrics": {
+        "siren": {
+          "threshold": 0.8,
+          "precision": 0.9014084507042254,
+          "recall": 0.8767123287671232,
+          "f1": 0.8888888888888888,
+          "true_positive": 64,
+          "false_positive": 7,
+          "false_negative": 9
+        },
+        "horn": {
+          "threshold": 0.9099999999999999,
+          "precision": 0.9812734082397003,
+          "recall": 0.9323843416370107,
+          "f1": 0.9562043795620437,
+          "true_positive": 262,
+          "false_positive": 5,
+          "false_negative": 19
+        }
+      }
+    },
+    {
+      "epoch": 5,
+      "train_loss": 0.22553008653317827,
+      "tune_loss": 0.14902935829013586,
+      "thresholds": [
+        0.8900000000000001,
+        0.63
+      ],
+      "metrics": {
+        "siren": {
+          "threshold": 0.8900000000000001,
+          "precision": 0.9014084507042254,
+          "recall": 0.8767123287671232,
+          "f1": 0.8888888888888888,
+          "true_positive": 64,
+          "false_positive": 7,
+          "false_negative": 9
+        },
+        "horn": {
+          "threshold": 0.63,
+          "precision": 0.9540636042402827,
+          "recall": 0.9608540925266904,
+          "f1": 0.9574468085106383,
+          "true_positive": 270,
+          "false_positive": 13,
+          "false_negative": 11
+        }
+      }
+    }
+  ]
+}

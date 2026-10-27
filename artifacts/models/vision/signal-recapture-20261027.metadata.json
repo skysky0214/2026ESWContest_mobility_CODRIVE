@@ -1,0 +1,1195 @@
+{
+  "method": "Transfer learning from pretrained YOLO11n, separate single-class auxiliary model; backbone layers 0..9 frozen; original road-user detector unchanged",
+  "training": {
+    "epochs": 30,
+    "training_images": 108,
+    "validation_images": 70,
+    "source": "89 registration-valid physical camera recaptures of intersection 11; 2 native-resolution upper crops per frame",
+    "weights": "best.pt selected by validation only",
+    "seed": 20261027,
+    "software": "Ultralytics 8.3.39, PyTorch 2.5.1+cu124; TensorRT FP16 engine built on Jetson 1"
+  },
+  "files": {
+    "pt": {
+      "path": "artifacts/models/vision/signal-recapture-20261027.pt",
+      "sha256": "94858194a85d88cc2bea5c5941a6c64ba4d45cdc623fddf9a63e16e53526cc69",
+      "bytes": 5447443
+    },
+    "onnx": {
+      "path": "artifacts/models/vision/signal-recapture-20261027.onnx",
+      "sha256": "114b3a428ec930e6dcb7fba3b970dc9117469ac949027faf812c424ad6894017",
+      "bytes": 10497511
+    },
+    "engine": {
+      "path": "artifacts/models/vision/signal-recapture-20261027.engine",
+      "sha256": "c710ed9c663b43c4786efefac5cdd0c9c9a0523371e47c9dd88f91021320e1a6",
+      "bytes": 8868485
+    }
+  },
+  "thresholds": {
+    "detector_minimum": 0.4,
+    "minimum_lamp_contrast_evidence": 0.65,
+    "temporal_frames": 3
+  },
+  "evaluation": {
+    "dataset-v2/baseline": {
+      "accepted_frames": 219,
+      "scenes": 81,
+      "metrics": {
+        "development": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 30,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 2,
+            "precision": null,
+            "recall": 0.0,
+            "support": 2
+          },
+          "car": {
+            "TP": 24,
+            "FP": 37,
+            "FN": 37,
+            "precision": 0.39344262295081966,
+            "recall": 0.39344262295081966,
+            "support": 61
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 23,
+            "precision": null,
+            "recall": 0.0,
+            "support": 23
+          },
+          "bus": {
+            "TP": 3,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 3
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 3,
+            "precision": null,
+            "recall": 0.0,
+            "support": 3
+          },
+          "traffic_light": {
+            "TP": 5,
+            "FP": 0,
+            "FN": 520,
+            "precision": 1.0,
+            "recall": 0.009523809523809525,
+            "support": 525
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "all": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 55,
+            "FN": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 9
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 22,
+            "precision": null,
+            "recall": 0.0,
+            "support": 22
+          },
+          "car": {
+            "TP": 86,
+            "FP": 79,
+            "FN": 264,
+            "precision": 0.5212121212121212,
+            "recall": 0.24571428571428572,
+            "support": 350
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 69,
+            "precision": null,
+            "recall": 0.0,
+            "support": 69
+          },
+          "bus": {
+            "TP": 7,
+            "FP": 2,
+            "FN": 0,
+            "precision": 0.7777777777777778,
+            "recall": 1.0,
+            "support": 7
+          },
+          "truck": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 5,
+            "precision": 1.0,
+            "recall": 0.375,
+            "support": 8
+          },
+          "traffic_light": {
+            "TP": 22,
+            "FP": 0,
+            "FN": 1414,
+            "precision": 1.0,
+            "recall": 0.01532033426183844,
+            "support": 1436
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "validation": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 4,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 3,
+            "precision": null,
+            "recall": 0.0,
+            "support": 3
+          },
+          "car": {
+            "TP": 9,
+            "FP": 22,
+            "FN": 23,
+            "precision": 0.2903225806451613,
+            "recall": 0.28125,
+            "support": 32
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 18,
+            "precision": null,
+            "recall": 0.0,
+            "support": 18
+          },
+          "bus": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 3
+          },
+          "truck": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 3
+          },
+          "traffic_light": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 430,
+            "precision": null,
+            "recall": 0.0,
+            "support": 430
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "test": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 21,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 17,
+            "precision": null,
+            "recall": 0.0,
+            "support": 17
+          },
+          "car": {
+            "TP": 53,
+            "FP": 20,
+            "FN": 204,
+            "precision": 0.726027397260274,
+            "recall": 0.20622568093385213,
+            "support": 257
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 28,
+            "precision": null,
+            "recall": 0.0,
+            "support": 28
+          },
+          "bus": {
+            "TP": 1,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.5,
+            "recall": 1.0,
+            "support": 1
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 2,
+            "precision": null,
+            "recall": 0.0,
+            "support": 2
+          },
+          "traffic_light": {
+            "TP": 17,
+            "FP": 0,
+            "FN": 464,
+            "precision": 1.0,
+            "recall": 0.035343035343035345,
+            "support": 481
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        }
+      }
+    },
+    "dataset-v2/refined-gated": {
+      "accepted_frames": 219,
+      "scenes": 81,
+      "metrics": {
+        "development": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 30,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 2,
+            "precision": null,
+            "recall": 0.0,
+            "support": 2
+          },
+          "car": {
+            "TP": 24,
+            "FP": 37,
+            "FN": 37,
+            "precision": 0.39344262295081966,
+            "recall": 0.39344262295081966,
+            "support": 61
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 23,
+            "precision": null,
+            "recall": 0.0,
+            "support": 23
+          },
+          "bus": {
+            "TP": 3,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.75,
+            "recall": 1.0,
+            "support": 3
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 3,
+            "precision": null,
+            "recall": 0.0,
+            "support": 3
+          },
+          "traffic_light": {
+            "TP": 28,
+            "FP": 0,
+            "FN": 497,
+            "precision": 1.0,
+            "recall": 0.05333333333333334,
+            "support": 525
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "all": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 55,
+            "FN": 9,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 9
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 22,
+            "precision": null,
+            "recall": 0.0,
+            "support": 22
+          },
+          "car": {
+            "TP": 86,
+            "FP": 79,
+            "FN": 264,
+            "precision": 0.5212121212121212,
+            "recall": 0.24571428571428572,
+            "support": 350
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 69,
+            "precision": null,
+            "recall": 0.0,
+            "support": 69
+          },
+          "bus": {
+            "TP": 7,
+            "FP": 2,
+            "FN": 0,
+            "precision": 0.7777777777777778,
+            "recall": 1.0,
+            "support": 7
+          },
+          "truck": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 5,
+            "precision": 1.0,
+            "recall": 0.375,
+            "support": 8
+          },
+          "traffic_light": {
+            "TP": 61,
+            "FP": 0,
+            "FN": 1375,
+            "precision": 1.0,
+            "recall": 0.04247910863509749,
+            "support": 1436
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "validation": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 4,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 3,
+            "precision": null,
+            "recall": 0.0,
+            "support": 3
+          },
+          "car": {
+            "TP": 9,
+            "FP": 22,
+            "FN": 23,
+            "precision": 0.2903225806451613,
+            "recall": 0.28125,
+            "support": 32
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 18,
+            "precision": null,
+            "recall": 0.0,
+            "support": 18
+          },
+          "bus": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 3
+          },
+          "truck": {
+            "TP": 3,
+            "FP": 0,
+            "FN": 0,
+            "precision": 1.0,
+            "recall": 1.0,
+            "support": 3
+          },
+          "traffic_light": {
+            "TP": 1,
+            "FP": 0,
+            "FN": 429,
+            "precision": 1.0,
+            "recall": 0.002325581395348837,
+            "support": 430
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "test": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 21,
+            "FN": 3,
+            "precision": 0.0,
+            "recall": 0.0,
+            "support": 3
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 17,
+            "precision": null,
+            "recall": 0.0,
+            "support": 17
+          },
+          "car": {
+            "TP": 53,
+            "FP": 20,
+            "FN": 204,
+            "precision": 0.726027397260274,
+            "recall": 0.20622568093385213,
+            "support": 257
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 28,
+            "precision": null,
+            "recall": 0.0,
+            "support": 28
+          },
+          "bus": {
+            "TP": 1,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.5,
+            "recall": 1.0,
+            "support": 1
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 2,
+            "precision": null,
+            "recall": 0.0,
+            "support": 2
+          },
+          "traffic_light": {
+            "TP": 32,
+            "FP": 0,
+            "FN": 449,
+            "precision": 1.0,
+            "recall": 0.06652806652806653,
+            "support": 481
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        }
+      }
+    },
+    "confirmation-v3/baseline": {
+      "accepted_frames": 27,
+      "scenes": 9,
+      "metrics": {
+        "test": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 43,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "car": {
+            "TP": 0,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "bus": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "traffic_light": {
+            "TP": 9,
+            "FP": 0,
+            "FN": 207,
+            "precision": 1.0,
+            "recall": 0.041666666666666664,
+            "support": 216
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "all": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 43,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "car": {
+            "TP": 0,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "bus": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "traffic_light": {
+            "TP": 9,
+            "FP": 0,
+            "FN": 207,
+            "precision": 1.0,
+            "recall": 0.041666666666666664,
+            "support": 216
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        }
+      }
+    },
+    "confirmation-v3/refined-gated": {
+      "accepted_frames": 27,
+      "scenes": 9,
+      "metrics": {
+        "test": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 43,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "car": {
+            "TP": 0,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "bus": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "traffic_light": {
+            "TP": 17,
+            "FP": 0,
+            "FN": 199,
+            "precision": 1.0,
+            "recall": 0.0787037037037037,
+            "support": 216
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        },
+        "all": {
+          "pedestrian": {
+            "TP": 0,
+            "FP": 43,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "bicycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "car": {
+            "TP": 0,
+            "FP": 1,
+            "FN": 0,
+            "precision": 0.0,
+            "recall": null,
+            "support": 0
+          },
+          "motorcycle": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "bus": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "truck": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          },
+          "traffic_light": {
+            "TP": 17,
+            "FP": 0,
+            "FN": 199,
+            "precision": 1.0,
+            "recall": 0.0787037037037037,
+            "support": 216
+          },
+          "stop_sign": {
+            "TP": 0,
+            "FP": 0,
+            "FN": 0,
+            "precision": null,
+            "recall": null,
+            "support": 0
+          }
+        }
+      }
+    }
+  },
+  "limitations": [
+    "Physical monitor recapture only, not real-road safety validation.",
+    "Static-map GT visibility supplemented by semantic replay; manual audits remain useful.",
+    "Frames within each scene are correlated.",
+    "Far traffic lights and rain/night remain weak; unknown states suppressed.",
+    "Stop-sign positives absent; no performance claim.",
+    "Ungated candidate rejected after held-out precision .6204; conservative revision separately confirmed at intersection 14."
+  ],
+  "runtime_status": "Conservative confirmed-lamp profile deployed Jetson 1; other classes use original engine; no capture hook or latency profiler enabled",
+  "initial_benchmark": {
+    "scope": "Paired YOLO inference and perception postprocess only; no capture/rectification/UFLD/DDS/HMI/TTS; camera service paused; 3 warmups + 30 samples per variant",
+    "seconds": {
+      "baseline": {
+        "mean": 0.05016246663356772,
+        "p50": 0.0505027910003264,
+        "p95": 0.053318359300010346
+      },
+      "refined": {
+        "mean": 0.09265078716671268,
+        "p50": 0.08968909599934705,
+        "p95": 0.10565823645065392
+      }
+    },
+    "samples": {
+      "baseline": [
+        0.04551186600110668,
+        0.04618890499841655,
+        0.046687700001712074,
+        0.04306586100028653,
+        0.04586403499888547,
+        0.05034601900115376,
+        0.04928990100052033,
+        0.05029049799850327,
+        0.05265794200022356,
+        0.04628909900020517,
+        0.05091297500075598,
+        0.0537924620002741,
+        0.05058279200056859,
+        0.051697537001018645,
+        0.05336086900024384,
+        0.050422790000084206,
+        0.050933647999045206,
+        0.05326640299972496,
+        0.050234112999532954,
+        0.05068301900064398,
+        0.052729463001014665,
+        0.050301570001465734,
+        0.05106427500140853,
+        0.05318774499937717,
+        0.04941832000076829,
+        0.05066727399935189,
+        0.05307129500033625,
+        0.04953582600137452,
+        0.050105373999031144,
+        0.05271442299999762
+      ],
+      "refined": [
+        0.09711785000035889,
+        0.0798070100008772,
+        0.07892404700032785,
+        0.09231035300035728,
+        0.08548870199956582,
+        0.08522443999936513,
+        0.10313135599972156,
+        0.08960994199878769,
+        0.0878774250013521,
+        0.1030818500003079,
+        0.09052682699984871,
+        0.08980364300077781,
+        0.10664528800043627,
+        0.09057847599979141,
+        0.08851084600064496,
+        0.10662170400064497,
+        0.08954632499990112,
+        0.08784526499948697,
+        0.10427717199854669,
+        0.08926107099978253,
+        0.08794648299954133,
+        0.10448066500066489,
+        0.0908831859997008,
+        0.08804997200059006,
+        0.10349411500101269,
+        0.0897682499999064,
+        0.08877731600114203,
+        0.10329948700018576,
+        0.08857590399929904,
+        0.08805864499845484
+      ]
+    }
+  },
+  "benchmark": {
+    "scope": "Paired YOLO inference and perception postprocess only; no capture/rectification/UFLD/DDS/HMI/TTS; camera service paused; 3 warmups + 30 samples per variant",
+    "seconds": {
+      "baseline": {
+        "mean": 0.05830345806668144,
+        "p50": 0.05865940150033566,
+        "p95": 0.061068433149921476
+      },
+      "refined": {
+        "mean": 0.10152592873309914,
+        "p50": 0.09563435899963224,
+        "p95": 0.11576169380086866
+      },
+      "refined_without_redundant_hough": {
+        "mean": 0.06507725680003204,
+        "p50": 0.05784707999919192,
+        "p95": 0.08261418920019423
+      }
+    },
+    "samples": {
+      "baseline": [
+        0.05806586400103697,
+        0.05624409799929708,
+        0.061101064000467886,
+        0.058951193999746465,
+        0.05616579200068372,
+        0.06102855099925364,
+        0.05850753699996858,
+        0.05827662000046985,
+        0.062191422999603674,
+        0.05855940999936138,
+        0.0559020420005254,
+        0.06016497999917192,
+        0.05871042699982354,
+        0.05342765900059021,
+        0.06043727899850637,
+        0.05831163400034711,
+        0.05659892500079877,
+        0.0603058200013038,
+        0.05880002900084946,
+        0.055176463998577674,
+        0.059945140999843716,
+        0.058734586998980376,
+        0.05449884900008328,
+        0.05967815899930429,
+        0.058664056999987224,
+        0.05569964300048014,
+        0.06012920899956953,
+        0.0586547460006841,
+        0.05597321700042812,
+        0.060199322000698885
+      ],
+      "refined": [
+        0.1134520870000415,
+        0.09502197099936893,
+        0.09449520799898892,
+        0.11620085000140534,
+        0.09489771199878305,
+        0.0942122249998647,
+        0.11604567800168297,
+        0.09592288599924359,
+        0.09514741300154128,
+        0.11441159599962702,
+        0.09433645199897,
+        0.09549187499942491,
+        0.11541460199987341,
+        0.09524035100002948,
+        0.09509330799846794,
+        0.11427464200096438,
+        0.09374467099951289,
+        0.09722743400016043,
+        0.1145051119983691,
+        0.09522348700011207,
+        0.09430593199977011,
+        0.11519638999925519,
+        0.09238998699947842,
+        0.09465672300029837,
+        0.11492348799947649,
+        0.09712295200006338,
+        0.09590951799873437,
+        0.11167177100105619,
+        0.09346469799857005,
+        0.09577684299983957
+      ],
+      "refined_without_redundant_hough": [
+        0.08198950400037575,
+        0.059024571999543696,
+        0.05534900699967693,
+        0.08369802000015625,
+        0.058845624000241514,
+        0.055891066000185674,
+        0.08174645899998723,
+        0.060069171000577626,
+        0.05519405999984883,
+        0.0829226120004023,
+        0.05718226200042409,
+        0.05536843600020802,
+        0.08142300300096394,
+        0.0579815149994829,
+        0.05491985099979502,
+        0.08192426200002956,
+        0.058526487000563066,
+        0.05528907400002936,
+        0.08223722799993993,
+        0.05746415999965393,
+        0.05438540600152919,
+        0.0811017809992336,
+        0.05709672800003318,
+        0.05453725100051088,
+        0.08190157299941347,
+        0.05771264499890094,
+        0.05482339999980468,
+        0.08110325199959334,
+        0.05705688699890743,
+        0.05555240800094907
+      ]
+    }
+  },
+  "performance_fix": "Skip unused Hough confidence only when ground geometry replaces it; preserve UFLD/ground output and Pi external TTL 250ms",
+  "proposal_reuse": {
+    "interval_frames": 2,
+    "maximum_age_s": 0.18,
+    "state_evidence": "Recomputed on every current frame, never cached",
+    "replay": "Full production engine replay at 10Hz proposal clock; 27 confirmation frames, TP17 FP0 unchanged"
+  },
+  "runtime_availability": {
+    "samples": [
+      {
+        "time_ns": 1793086272833660440,
+        "available": true,
+        "age_s": 0.191704973,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086273358957797,
+        "available": true,
+        "age_s": 0.161170446,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086273895237536,
+        "available": true,
+        "age_s": 0.179228688,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086274419022411,
+        "available": true,
+        "age_s": 0.13673079,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086274944746167,
+        "available": true,
+        "age_s": 0.216731054,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086275482039642,
+        "available": true,
+        "age_s": 0.128763799,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086276004997826,
+        "available": true,
+        "age_s": 0.173946364,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086276522861284,
+        "available": true,
+        "age_s": 0.143012443,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086277043262033,
+        "available": true,
+        "age_s": 0.176517151,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086277575876218,
+        "available": true,
+        "age_s": 0.170033837,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086278099099488,
+        "available": true,
+        "age_s": 0.106642588,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086278632081443,
+        "available": true,
+        "age_s": 0.159440617,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086279157619234,
+        "available": true,
+        "age_s": 0.182916886,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086279679604172,
+        "available": true,
+        "age_s": 0.126838697,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086280202514852,
+        "available": true,
+        "age_s": 0.190692019,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086280724179762,
+        "available": true,
+        "age_s": 0.16362415,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086281246054454,
+        "available": true,
+        "age_s": 0.201491416,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086281768295308,
+        "available": true,
+        "age_s": 0.180339356,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086282288296610,
+        "available": true,
+        "age_s": 0.185465718,
+        "model": "yolo11n.engine:signal_refinement"
+      },
+      {
+        "time_ns": 1793086282816260237,
+        "available": true,
+        "age_s": 0.145962798,
+        "model": "yolo11n.engine:signal_refinement"
+      }
+    ],
+    "available": 20,
+    "count": 20,
+    "scope": "2Hz Pi HMI API sampling for 10 seconds after warmup; spatial proposal cadence 2 frames; not full latency benchmark"
+  },
+  "benchmark_note": "Recorded paired component benchmark predates spatial proposal reuse and median memoization; final production availability separately sampled for 10 seconds"
+}

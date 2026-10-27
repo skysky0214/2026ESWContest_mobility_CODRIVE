@@ -1,0 +1,11 @@
+[Unit]
+Description=Checkpoint the synchronized Jetson clock every minute
+
+[Timer]
+OnBootSec=45s
+OnUnitActiveSec=60s
+AccuracySec=1s
+Unit=codrive-clock-save.service
+
+[Install]
+WantedBy=timers.target

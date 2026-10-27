@@ -1,0 +1,1 @@
+"""Sensor inference adapters."""

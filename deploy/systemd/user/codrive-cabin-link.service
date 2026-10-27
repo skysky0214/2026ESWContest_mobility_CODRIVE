@@ -1,0 +1,18 @@
+[Unit]
+Description=CODRIVE Jetson 2 DDS link independent of camera and microphone
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/EWS/ESW2026-integration
+Environment=CODRIVE_LOG_TO_FILE=1
+ExecStartPre=/bin/bash %h/EWS/ESW2026-integration/scripts/wait-wired-clock.sh enP8p1s0 192.168.50.22/24
+TimeoutStartSec=210
+ExecStart=/bin/bash %h/EWS/ESW2026-integration/scripts/run-cabin-link.sh
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

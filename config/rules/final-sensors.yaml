@@ -1,0 +1,23 @@
+# Experimental thresholds; tune with recorded CAN/driver data on the target board.
+schema_version: 1
+risk:
+  minimum_motion_mps: 1.4
+  driver_warning_ms: 1500
+  driver_critical_ms: 4000
+  night_weight: 1.15
+  rain_weight: 1.2
+  snow_weight: 1.35
+  fog_weight: 1.4
+  thunder_weight: 1.35
+  visibility_warning_m: 1000
+  visibility_critical_m: 200
+  visibility_max_weight: 1.6
+  environment_weight_cap: 2.0
+  acceleration_threshold_mps2: 3.0
+  acceleration_hold_ms: 300
+  pedal_rate_pct_s: 300
+  pedal_min_change_pct: 20
+  pedal_min_pct: 60
+  pedal_hold_ms: 100
+  motion_window_ms: 200
+  motion_max_gap_ms: 150

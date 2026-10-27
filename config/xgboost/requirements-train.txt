@@ -1,0 +1,4 @@
+# Offline CPU training; no sklearn, pandas, CUDA or SHAP dependency.
+-r requirements-infer.txt
+numpy==2.5.4
+xgboost-cpu==3.4.1

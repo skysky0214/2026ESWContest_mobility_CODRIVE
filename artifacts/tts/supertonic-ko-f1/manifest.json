@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "engine": "supertonic-3",
+  "voice": "F1",
+  "speaker_id": 0,
+  "language": "ko",
+  "sample_rate": 44100,
+  "model_url": "https://github.com/k2-fsa/sherpa-onnx/releases/download/tts-models/sherpa-onnx-supertonic-3-tts-int8-2026-05-11.tar.bz2",
+  "sherpa_onnx_version": "1.13.8",
+  "steps": 8,
+  "speed": 1.0,
+  "model_sha256": {
+    "duration_predictor.int8.onnx": "c3eb91414d5ff8a7a239b7fe9e34e7e2bf8a8140d8375ffb14718b1c639325db",
+    "text_encoder.int8.onnx": "c7befd5ea8c3119769e8a6c1486c4edc6a3bc8365c67621c881bbb774b9902ff",
+    "vector_estimator.int8.onnx": "20cd86fa5c6effedfda0e7cffe5b0569ca401c440a0c3a1d72bf39286c0db3fd",
+    "vocoder.int8.onnx": "e923d60f53f95eb1ce235f1dc33ec56d9c057823c96fa6f8acf98f32b0da6152",
+    "tts.json": "42078d3aef1cd43ab43021f3c54f47d2d75ceb4e75f627f118890128b06a0d09",
+    "unicode_indexer.bin": "8402ca48e5189a8950138580b0fff64db6f072f24ac07cd54ba8b2fbb9883b30",
+    "voice.bin": "67d5209b0ee8ce6c74105ffbe12fe6a7628aea3b4ba2fcb308a4a67938a93ce8"
+  },
+  "clips": [
+    {
+      "text": "가속 페달을 급하게 밟았습니다. 부드럽게 조작하세요.",
+      "file": "f2d81bbca1205a354de47c5bd6cd702ee95dd38366df8dc739086ce507386a94.wav",
+      "sha256": "16e794b305705e6b1306c2581e3e601f5daa3a6e3c8ab673ab49d813733db1b9",
+      "duration_s": 4.640975056689342,
+      "generation_s": 2.416342334006913
+    },
+    {
+      "text": "경적이 감지되었습니다. 주변을 확인하세요.",
+      "file": "634e4e4fda5f742e36c48da62ed7326a9d2c9793b89be0f9e4e387a0a4b57f10.wav",
+      "sha256": "8452729ef5ec77dc61f7cb0cc04ebeedd468420af84c989a5686162449a63045",
+      "duration_s": 3.800113378684807,
+      "generation_s": 1.9373239940032363
+    },
+    {
+      "text": "고개 떨굼이 감지되었습니다. 전방을 확인하세요.",
+      "file": "209b051202c8633967ca3e18302d55b93637dfa9f81ba8f6e719e7a83630d0b7.wav",
+      "sha256": "414796c42831e19a138ac6010872b0ef2dcaeb9f11090f60ece4a2a6d94d15df",
+      "duration_s": 4.265600907029478,
+      "generation_s": 1.8514418659906369
+    },
+    {
+      "text": "급가속이 감지되었습니다. 가속 페달에서 발을 떼세요.",
+      "file": "a975eb20972927007e0d51fd94ea3f6993210de2a331622ab7f2f62f3b64ade0.wav",
+      "sha256": "3441a69c4cc3b56f6eacfe425776c683e99f02eb3c891118981415a44a450749",
+      "duration_s": 4.6781179138321995,
+      "generation_s": 1.0707135409998045
+    },
+    {
+      "text": "급가속이 감지되었습니다. 가속 페달을 천천히 놓으세요.",
+      "file": "b1a4af3c642de25c241e1badedc798c51f6e1a91a64902f9cc79fee94c7dd97a.wav",
+      "sha256": "9f76e115da33f00b745ade769d40b4030ef09cdc2e5f4270af802711b1b2cd13",
+      "duration_s": 4.812834467120181,
+      "generation_s": 2.3192614239815157
+    },
+    {
+      "text": "긴급차량이 접근합니다. 주변을 확인하고 양보하세요.",
+      "file": "4429eb33f5f7edd94df1ebb25fd470c3c0f1f34a25cec3e0bea1144ae20c5b4e.wav",
+      "sha256": "a44d7e08bb9ba2b0f0c779f4b92c5460fbb137bb6effcd1284b874cc64461308",
+      "duration_s": 4.502199546485261,
+      "generation_s": 1.0399109840000165
+    },
+    {
+      "text": "오른쪽에서 경적이 감지되었습니다. 주변을 확인하세요.",
+      "file": "b06d580f7b59919196bef42ceb46f9cf1436619929ef65b11b9575240bc6330f.wav",
+      "sha256": "bd297859fcca91961023dff47f4c80443d265714a6677c05ca10bd629edde68f",
+      "duration_s": 4.9559410430839,
+      "generation_s": 2.3851631630095653
+    },
+    {
+      "text": "오른쪽에서 사이렌이 감지되었습니다. 주변을 확인하세요.",
+      "file": "4f860d5d90e3c5978466e86da831efc8a26531276dd82b3eca129a4878aab05d.wav",
+      "sha256": "c1810223a937f22c787a06996b902fc327206fa546248664ff880ddc4b913cfe",
+      "duration_s": 5.044104308390023,
+      "generation_s": 2.414237071003299
+    },
+    {
+      "text": "왼쪽에서 경적이 감지되었습니다. 주변을 확인하세요.",
+      "file": "031c6657f165bacc7a15dba988dc03ae037e9bd05e0cf4c791a40f20d114410b.wav",
+      "sha256": "6642648ccddbb45ee1945f30d631f73039af73d6fa15accce3af34439a0db7e0",
+      "duration_s": 4.755668934240362,
+      "generation_s": 2.1830621759872884
+    },
+    {
+      "text": "왼쪽에서 사이렌이 감지되었습니다. 주변을 확인하세요.",
+      "file": "1c7c12d0ce029f353396decf918c22e806759734e5bad7aa12f0a9bb865990c6.wav",
+      "sha256": "a9224007995a2e2f6cb312cd5a44d2cba404f47a0319620bf2eae84eb4afd181",
+      "duration_s": 4.844988662131519,
+      "generation_s": 2.191497609979706
+    },
+    {
+      "text": "위험합니다. 전방을 확인하세요.",
+      "file": "f4edddce8a1ccdf152bf0a69a927c6abdfb6e03aec6b9a2718aeaaf583b467dc.wav",
+      "sha256": "081990ee0dd4cf9751b0c782ce97e96e6c132628b55b6d403ffef3c3b28d5008",
+      "duration_s": 2.9247165532879817,
+      "generation_s": 0.7232937659996423
+    },
+    {
+      "text": "전방 보행자 위험입니다. 즉시 제동하세요.",
+      "file": "6768bd0297347e39095b8fd8ff3f22872dd111ec14663e943bddfed16b2d1c07.wav",
+      "sha256": "c29a07030a2fc7357e5d9f00c0f6abc9c6b0b3d7010bf5b033f45cc431121e70",
+      "duration_s": 3.8351020408163263,
+      "generation_s": 0.86663020900005
+    },
+    {
+      "text": "전방 위험 요소가 있습니다. 속도를 줄이세요.",
+      "file": "51c3e32bc3c576846e7ebe8e3e442817040eb4744777415a7872edf245970dc7.wav",
+      "sha256": "df4012c5fc236d17147ee77a092059c22cbe68372b5eb670639f68702e66d262",
+      "duration_s": 3.9827210884353743,
+      "generation_s": 1.2552240930090193
+    },
+    {
+      "text": "전방 적색 신호입니다. 제동하세요.",
+      "file": "f7a63611848d996ae982d947397c162def3d34ed3c9ebb13e9f03c23d36b982f.wav",
+      "sha256": "caba6c49869973456b3656281faef99ed83c1977f106c99e1cd43c3a9d2703e1",
+      "duration_s": 3.2255328798185943,
+      "generation_s": 0.7477829690001272
+    },
+    {
+      "text": "전방 충돌 위험입니다. 즉시 제동하세요.",
+      "file": "269acf7e5a94c8ef43a57bbcce1e94ffbaabf84edcb93cb49394fbcdd24948b4.wav",
+      "sha256": "f0cbb176763bbcacbd7f976759ccf81ae6ad3e25234ed19edf13c5fc1eefaa3e",
+      "duration_s": 3.7193197278911563,
+      "generation_s": 1.2296271630038973
+    },
+    {
+      "text": "전방 황색 신호입니다. 속도를 줄이세요.",
+      "file": "33786463a7ae91d8b6145c3c6f1f67604c8934b07648f098e8e859a10a5fdab8.wav",
+      "sha256": "cddb1642fd154738cbbf7141e9d73129084a1421ffb3dd4f5024ada2bc4a6e49",
+      "duration_s": 3.6940362811791383,
+      "generation_s": 1.188992331008194
+    },
+    {
+      "text": "정지 표지판이 감지되었습니다. 주변을 확인하세요.",
+      "file": "8360152b36dfe719a415a779228e498ef5e58c964bf7a77c3f8400d2dd6aa322.wav",
+      "sha256": "a2ef19e01d7781b3e1acf7626f7823843d512f630db46b3e1be304fb0c78a77b",
+      "duration_s": 4.413922902494331,
+      "generation_s": 1.990875223011244
+    },
+    {
+      "text": "졸음 징후가 감지되었습니다.",
+      "file": "622d48d0d7a64b9a56cd2219d87388b3b8299a8dd98a65d5ba7e2be89f993783.wav",
+      "sha256": "8e860917623c2c7fc08c1475a2219594d0952fb44558920ce634b0c2974d4063",
+      "duration_s": 2.549342403628118,
+      "generation_s": 0.6918216700000812
+    },
+    {
+      "text": "졸음 징후가 감지되었습니다. 안전한 장소에 정차하고 휴식하세요.",
+      "file": "7f7aa05264b0c1b481da3a692ad629bca7c164d0ccef37a16605129d56dd963e.wav",
+      "sha256": "c7472fb82d43e410723876758af9d2782638cb710179478da4a9eeab887fd172",
+      "duration_s": 5.725941043083901,
+      "generation_s": 1.6685659130016575
+    },
+    {
+      "text": "주변 보행자와 차량을 확인하세요.",
+      "file": "a06ab43a88dd224807dee644b2788d5e9daa9f248bda127be669d0c295288ebe.wav",
+      "sha256": "f41c06d04759315bff5feedb5db931846e75e7a94a114b91db3551e311c74bdd",
+      "duration_s": 3.0774603174603175,
+      "generation_s": 1.5686344979912974
+    },
+    {
+      "text": "주변 위험 요소를 확인하세요.",
+      "file": "761e814800ff1b24d9a41e0c95a7504034e32cf2dc95f95debc00bf6b7832918.wav",
+      "sha256": "983c9be87e53b9c3b7d3e30c3467b3790da033ef6be1046c702daa41e796d37f",
+      "duration_s": 2.602925170068027,
+      "generation_s": 0.7191763420000825
+    },
+    {
+      "text": "주의 분산이 감지되었습니다.",
+      "file": "8ad5c1c1604d0fd44c77e1419ddb287ae89afcf3cf9afc314464b68164814e7a.wav",
+      "sha256": "44607204160ffd718bf82c19b3e61d1c7624c508c709df1774b519a558540edf",
+      "duration_s": 2.5248526077097506,
+      "generation_s": 0.7848189050000656
+    },
+    {
+      "text": "주의 분산이 감지되었습니다. 전방을 주시하세요.",
+      "file": "57f9c3c6208884ef6135f4a8b5a8e6195d0f017cf9deafb8501b29ab7855f36f.wav",
+      "sha256": "daab97982b2bfe8b48c624fc41398c035a22e2a48214d49f1ed2ba6cc51e6788",
+      "duration_s": 4.210634920634921,
+      "generation_s": 1.2695027640002081
+    },
+    {
+      "text": "차선을 벗어나고 있습니다. 안전하게 복귀하세요.",
+      "file": "6ebd14cf8d198ce39a093c059ec558f85021c3053a577644eddf42ac1832a5a2.wav",
+      "sha256": "7496ec34101e97077087fb9bf48e20c31c5954e8ded4410fd8e8f2dc10c13e8e",
+      "duration_s": 4.292857142857143,
+      "generation_s": 0.9305445690001761
+    },
+    {
+      "text": "코드라이브 여성 음성 안내입니다. 전방을 주시하세요.",
+      "file": "a8951d2769731bcc9856867c7d4e0d6063164a44799c0c0c557ca006099ac1ba.wav",
+      "sha256": "2a4a74d6a6f605a3c32677b94524c9ae24774336acd7b44323b430978a7e8a89",
+      "duration_s": 4.542517006802721,
+      "generation_s": 1.0491533929998695
+    },
+    {
+      "text": "황색 신호입니다. 속도를 줄이세요.",
+      "file": "2b0be9f4067fed0f4c86edc7bf741d9abb25b886f5a7ead9f6f660809cff2aed.wav",
+      "sha256": "e75d3c696cbde90842d0402b37f59c131e9dd4e094fb10062fa675ada549b215",
+      "duration_s": 3.1975056689342405,
+      "generation_s": 1.5394244210037868
+    },
+    {
+      "text": "휴대폰 사용이 감지되었습니다.",
+      "file": "204d935c4781e0b24f4f2a9df14dba26f8afb047177d5bd3aba4606137a1c6fa.wav",
+      "sha256": "422daf9b444a1be80f4a4e819160054737861bc6f7a2bf263c2f15e128878522",
+      "duration_s": 2.5503628117913832,
+      "generation_s": 0.6691615320000892
+    },
+    {
+      "text": "휴대폰 사용이 감지되었습니다. 휴대폰을 내려놓고 전방을 주시하세요.",
+      "file": "0d140967d554528ab1d374e4e28ec50f4170037ac6db4e76aa7d457525436412.wav",
+      "sha256": "98368cb2f72e6e864cb19eed04add20d031c5e2ffe513e450a8ea364f185195f",
+      "duration_s": 5.745600907029479,
+      "generation_s": 1.6598198849969776
+    },
+    {
+      "text": "가속페달 입력이 큽니다. 가속페달을 확인하세요.",
+      "file": "f0d2adf156c545410db632134e3635c10264a240b516160a0fa27a5a6da7825e.wav",
+      "sha256": "38dbc9bda2d3879b0568143fd619d28d65353bc1d9d8f6e34ad2a51d51f18c7d"
+    }
+  ],
+  "import": {
+    "source_workspace": "ESW2026-front-demo",
+    "source_commit": "40686a4",
+    "target_workspace": "ESW2026-latest",
+    "current_guidance_phrase_count": 22,
+    "generated_additional_f1_phrases": [
+      "가속 페달을 급하게 밟았습니다. 부드럽게 조작하세요.",
+      "경적이 감지되었습니다. 주변을 확인하세요.",
+      "고개 떨굼이 감지되었습니다. 전방을 확인하세요.",
+      "급가속이 감지되었습니다. 가속 페달을 천천히 놓으세요.",
+      "오른쪽에서 경적이 감지되었습니다. 주변을 확인하세요.",
+      "오른쪽에서 사이렌이 감지되었습니다. 주변을 확인하세요.",
+      "왼쪽에서 경적이 감지되었습니다. 주변을 확인하세요.",
+      "왼쪽에서 사이렌이 감지되었습니다. 주변을 확인하세요.",
+      "정지 표지판이 감지되었습니다. 주변을 확인하세요.",
+      "주변 보행자와 차량을 확인하세요.",
+      "황색 신호입니다. 속도를 줄이세요."
+    ],
+    "note": "Original F1 PCM preserved; missing current guidance generated offline with the same verified model and speaker 0."
+  }
+}

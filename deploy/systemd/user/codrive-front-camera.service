@@ -1,0 +1,20 @@
+[Unit]
+Description=CODRIVE main GMSL inference and HMI preview and DDS perception
+StartLimitIntervalSec=120
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ws/ESW2026-main-front-20261021
+Environment=PYTHONPATH=%h/ws/ESW2026-main-front-20261021/src
+Environment=CYCLONEDDS_HOME=%h/ws/adas/.deps/cyclonedds/install
+Environment=LD_LIBRARY_PATH=%h/ws/adas/.deps/cyclonedds/install/lib
+Environment=OMP_NUM_THREADS=1
+Environment=CYCLONEDDS_URI=file://%h/ws/ESW2026-main-front-20261021/config/integration/cyclonedds-jetson1-wired.xml
+ExecStart=%h/ws/adas/.venv/bin/python -m codrive.apps.jetson_front --backend v4l2 --device-index 0 --width 3840 --height 2160 --fps 30 --pixel-format UYVY --lane-method colour --lane-interval 1 --headless
+Restart=on-failure
+RestartSec=5
+TimeoutStopSec=15
+
+[Install]
+WantedBy=default.target

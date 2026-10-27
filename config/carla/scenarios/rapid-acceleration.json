@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "id": "rapid-acceleration",
+  "name": "④ 페달 입력 + 급가속",
+  "map": "Town10HD_Opt",
+  "spawn_index": 10,
+  "crossing_forward_m": 45.0,
+  "lateral_start_m": -3.0,
+  "lateral_end_m": 3.0,
+  "pedestrian_speed_mps": 2.5,
+  "trigger_ttc_s": 1.2,
+  "trigger_max_distance_m": 25.0,
+  "minimum_speed_kmh": 5.0,
+  "recommended_speed_kmh": 40.0,
+  "pedestrian_blueprint": "walker.pedestrian.0001",
+  "trigger_mode": "distance",
+  "trigger_distance_m": 16.0,
+  "trigger_lateral_tolerance_m": 5.0,
+  "kind": "rapid_acceleration",
+  "instructions": "직선에서 엑셀을 90% 이상 눌러 가속한 뒤 발을 떼고 정차하세요. 완만한 가속도 비교 시험할 수 있습니다. 정차·엑셀 해제 후 R키로 반복하세요. 위험 경고는 가속도 4m/s² 조건도 0.5초 유지되어야 합니다.",
+  "acceleration_threshold_mps2": 4.0,
+  "accelerator_threshold": 0.9
+}

@@ -1,0 +1,65 @@
+schema_version: 1
+node_id: pi5
+role: safety_orchestrator_hmi
+dds:
+  domain_id: 42
+  interface: eth0
+  config_uri: config/cyclonedds.xml
+time_sync:
+  mode: ptp_grandmaster
+  max_offset_ms: 5
+panda:
+  usb_serial: auto
+  receive_only: true
+  can_fd: true
+  # Do not guess these. Fill per bus from the validated EV6 connection profile.
+  nominal_bitrate_kbps: null
+  data_bitrate_kbps: null
+  # Must be supplied and validated against the exact 2022 EV6 bus/fingerprint.
+  dbc_path: null
+  expected_buses: [0, 1]
+ins:
+  type: novatel_ascii
+  device: /dev/ttyUSB1
+  baudrate: 115200
+  messages: [BESTPOSA, HEADING2A, GPGGA]
+  # Required before unintended-acceleration cross-check can run on real data.
+  motion_message: null
+  origin:
+    latitude_deg: null
+    longitude_deg: null
+environment:
+  # Time-of-day is local. A weather API is optional and never blocks safety.
+  weather_api_enabled: false
+  publish_interval_s: 60
+fusion:
+  rate_hz: 50
+  source_allowlist:
+    vehicle: [pi5.panda]
+    ins: [pi5.ins]
+    "external:front": [jetson-front.front]
+    "driver:cabin": [jetson-cabin.dms]
+    audio: [jetson-cabin.audio]
+  ttl_ms:
+    vehicle: 120
+    ins: 250
+    external: 250
+    driver: 400
+    audio: 1000
+    environment: 300000
+risk:
+  rate_hz: 50
+  critical_path_deadline_ms: 200
+  duplicate_cooldown_ms: 900
+hmi:
+  display: local
+  tts: local
+  web_host: 0.0.0.0
+  web_port: 8090
+  vehicle_stale_ms: 500
+  front_camera_stream_url: http://192.168.50.21:8080/stream.mjpg
+  critical_template_only: true
+  noncritical_llm_enabled: false
+health:
+  heartbeat_hz: 2
+  missed_heartbeats_before_degraded: 3

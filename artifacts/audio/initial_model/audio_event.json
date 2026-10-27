@@ -1,0 +1,23 @@
+{
+  "model_version": "audio-event-v1",
+  "feature_config": {
+    "sample_rate_hz": 16000,
+    "window_ms": 960,
+    "frame_ms": 25.0,
+    "frame_hop_ms": 10.0,
+    "n_fft": 512,
+    "n_mels": 64,
+    "target_frames": 96,
+    "f_min_hz": 50.0,
+    "f_max_hz": 8000.0,
+    "log_floor": 1e-10
+  },
+  "thresholds": [
+    0.8900000000000001,
+    0.63
+  ],
+  "target_names": [
+    "siren",
+    "horn"
+  ]
+}

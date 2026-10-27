@@ -1,0 +1,29 @@
+{
+  "blueprint": "vehicle.audi.a2",
+  "actor_id": 75,
+  "wheelbase_m": 2.5064960560065392,
+  "rear_axle_offset_m": 1.2562982994355474,
+  "vehicle_half_width_m": 0.8943392634391785,
+  "vehicle_front_m": 1.8526854229345986,
+  "vehicle_rear_m": 1.8526840495690635,
+  "maximum_road_wheel_deg": 69.99999237060547,
+  "steering_curve_kmh": [
+    [
+      0.0,
+      1.0
+    ],
+    [
+      20.0,
+      0.8999999761581421
+    ],
+    [
+      60.0,
+      0.800000011920929
+    ],
+    [
+      120.0,
+      0.699999988079071
+    ]
+  ],
+  "mass_kg": 995.0
+}

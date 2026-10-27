@@ -1,0 +1,54 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "codrive"
+version = "0.1.0"
+description = "Distributed driver-assistance framework for ESW 2026"
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+  "PyYAML>=6.0,<7",
+]
+
+[project.optional-dependencies]
+dds = ["cyclonedds>=0.10"]
+edge = [
+  "pyserial>=3.5,<4",
+  "numpy>=1.24,<3",
+]
+# Jetson camera capture must use the JetPack/carrier OpenCV build with GStreamer;
+# the generic PyPI OpenCV wheel is intentionally not installed here.
+vision-dev = ["opencv-python-headless>=4.8,<5"]
+can = ["cantools>=39,<44", "python-can>=4.5,<5", "pyserial>=3.5,<4"]
+dms = ["ultralytics>=8.3,<9"]
+dev = ["pytest>=8,<9", "ruff>=0.6,<1"]
+risk-ml = ["numpy>=1.24,<3", "xgboost-cpu>=3.0,<4"]
+speech-build = ["sherpa-onnx==1.13.8", "numpy>=1.24,<3"]
+
+[project.scripts]
+codrive-sim = "codrive.simulator:main"
+codrive-dms = "codrive.apps.dms:main"
+codrive-dms-preview = "codrive.apps.dms_preview:main"
+codrive-dms-doctor = "codrive.apps.dms_doctor:main"
+codrive-pi = "codrive.apps.pi:main"
+codrive-hmi-preview = "codrive.apps.hmi_preview:main"
+codrive-speech = "codrive.speech:main"
+codrive-audio = "codrive.apps.audio:main"
+codrive-front-standby = "codrive.apps.standby:main"
+
+[tool.setuptools.package-data]
+"codrive.apps" = ["dashboard.html", "dashboard.js", "main_hmi.html", "main_hmi_live.js"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]
+addopts = "-q"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 100

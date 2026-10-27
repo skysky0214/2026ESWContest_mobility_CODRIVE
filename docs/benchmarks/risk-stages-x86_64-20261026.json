@@ -1,0 +1,112 @@
+{
+  "host": {
+    "architecture": "x86_64",
+    "platform": "Linux-6.8.0-142-generic-x86_64-with-glibc2.39",
+    "python": "3.12.3"
+  },
+  "iterations": 10000,
+  "warmup": 500,
+  "wall_seconds_including_fixture_preparation": 11.65069886110723,
+  "cpu_seconds_including_fixture_preparation": 11.643482050999998,
+  "model_sha256": "66cb5dd1c6e7649f1d441ddcbd98556b3dea5ac847e66cb1a28056eca92e9f2a",
+  "sensor_stream_sha256": "78703961b860ac5955f6d2635f17b1322f1d2c47900625e02daba84d9ee3ea6d",
+  "stages": {
+    "snapshot_integration_including_json": {
+      "samples": 10000,
+      "mean_ms": 0.6190646691,
+      "p50_ms": 0.583995,
+      "p95_ms": 1.0076555499999986,
+      "p99_ms": 1.1492492,
+      "max_ms": 1.938621
+    },
+    "input_decode_and_fusion_ingest": {
+      "samples": 10000,
+      "mean_ms": 0.4870831188,
+      "p50_ms": 0.455747,
+      "p95_ms": 0.8384043999999996,
+      "p99_ms": 0.96254575,
+      "max_ms": 1.758534
+    },
+    "snapshot_creation_only": {
+      "samples": 10000,
+      "mean_ms": 0.0152877993,
+      "p50_ms": 0.015215,
+      "p95_ms": 0.01583,
+      "p99_ms": 0.01903502,
+      "max_ms": 0.045835
+    },
+    "snapshot_json_publication": {
+      "samples": 10000,
+      "mean_ms": 0.11669375100000003,
+      "p50_ms": 0.1136305,
+      "p95_ms": 0.1579165499999998,
+      "p99_ms": 0.17183008000000002,
+      "max_ms": 0.329888
+    },
+    "xgboost_predictor_full": {
+      "samples": 10000,
+      "mean_ms": 0.23500703400000003,
+      "p50_ms": 0.215893,
+      "p95_ms": 0.33565205,
+      "p99_ms": 0.34600292000000005,
+      "max_ms": 0.679962
+    },
+    "xgboost_booster_only": {
+      "samples": 10000,
+      "mean_ms": 0.126340568,
+      "p50_ms": 0.109792,
+      "p95_ms": 0.20583714999999997,
+      "p99_ms": 0.22116782000000001,
+      "max_ms": 0.533464
+    },
+    "rule_risk_and_final_warning": {
+      "samples": 10000,
+      "mean_ms": 0.05652638260000001,
+      "p50_ms": 0.047241,
+      "p95_ms": 0.1276342,
+      "p99_ms": 0.13838448,
+      "max_ms": 0.159107
+    },
+    "rule_risk_when_event_emitted": {
+      "samples": 1314,
+      "mean_ms": 0.1259867709284627,
+      "p50_ms": 0.1254945,
+      "p95_ms": 0.14033615,
+      "p99_ms": 0.14456385999999996,
+      "max_ms": 0.159107
+    }
+  },
+  "emitted_event_codes": {
+    "road_user_attention": 399,
+    "driver_phone_use": 57,
+    "driver_drowsy_observation": 60,
+    "driver_head_drop": 26,
+    "driver_inattention": 39,
+    "emergency_vehicle": 97,
+    "horn_alert": 72,
+    "red_light_approach": 202,
+    "yellow_light_approach": 99,
+    "rapid_acceleration": 64,
+    "rapid_pedal": 56,
+    "stop_sign_attention": 55,
+    "driver_phone_observation": 21,
+    "driver_drowsiness": 50,
+    "driver_attention_observation": 17
+  },
+  "rejected_samples": 0,
+  "max_front_objects": 8,
+  "scope": {
+    "snapshot_integration_including_json": "Local CAN/environment ingest + remote JSON decode/envelope validation + fusion + snapshot JSON publication on LocalBus",
+    "xgboost_predictor_full": "36-field validation, 52-column encoding, CPU booster, left/right symmetric inference, class selection and warning templates; model loaded before timing",
+    "xgboost_booster_only": "Already encoded 52-column row, including mirrored directional inference when applicable",
+    "rule_risk_and_final_warning": "RiskEngine.evaluate (including shared feature extraction), repeat suppression, risk/HMI JSON publication, observation speech gate and HmiArbiter; no speech playback"
+  },
+  "limitations": [
+    "Measured on the recorded host; not Raspberry Pi measurements unless run on the Pi",
+    "Saved synthetic stream, at most one current packet per stream per cycle; not saturated DDS backlog",
+    "LocalBus substitutes for DDS; excludes physical capture, edge inference, network transport, HTTP/browser rendering, weather API and audio playback",
+    "Production XGBoost is asynchronous display-only at <=10Hz, not a serial input to the final warning decision",
+    "No separate RiskStateMachine in board_runtime path; rule selection and HMI arbitration are timed instead",
+    "Averages include cycles with no newly emitted event; emitted-event subset is reported separately"
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "checkpoint": "artifacts/audio/initial_model/audio_event_best.pt",
+  "model_version": "audio-event-v1",
+  "partition": "final_test",
+  "sample_count": 3044,
+  "loss": 0.13912681946142888,
+  "thresholds": [
+    0.8900000000000001,
+    0.63
+  ],
+  "metrics": {
+    "siren": {
+      "threshold": 0.8900000000000001,
+      "precision": 0.9504504504504504,
+      "recall": 0.8473895582329317,
+      "f1": 0.8959660297239914,
+      "true_positive": 211,
+      "false_positive": 11,
+      "false_negative": 38
+    },
+    "horn": {
+      "threshold": 0.63,
+      "precision": 0.9514563106796117,
+      "recall": 0.9607843137254902,
+      "f1": 0.9560975609756097,
+      "true_positive": 882,
+      "false_positive": 45,
+      "false_negative": 36
+    }
+  },
+  "error_slices": {
+    "siren": {
+      "false_positive_by_category_03": {
+        "이륜차주행음": 6,
+        "차량경적": 2,
+        "차량주행음": 2,
+        "헬리콥터": 1
+      },
+      "false_negative_by_category_03": {
+        "차량사이렌": 38
+      },
+      "false_positives_per_1000_negative_clips": 3.9355992844364938
+    },
+    "horn": {
+      "false_positive_by_category_03": {
+        "기차": 8,
+        "비행기": 4,
+        "이륜차주행음": 15,
+        "지하철": 2,
+        "차량사이렌": 10,
+        "차량주행음": 4,
+        "헬리콥터": 2
+      },
+      "false_negative_by_category_03": {
+        "이륜차경적": 7,
+        "차량경적": 29
+      },
+      "false_positives_per_1000_negative_clips": 21.16650987770461
+    }
+  },
+  "elapsed_s": 76.03302160299972,
+  "clips_per_second": 40.03523647782933
+}

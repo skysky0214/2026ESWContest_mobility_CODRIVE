@@ -1,0 +1,23 @@
+[Unit]
+Description=CODRIVE C922 microphone audio event publisher
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/EWS/ESW2026-integration
+Environment=CODRIVE_LOG_TO_FILE=1
+ExecStartPre=/bin/bash %h/EWS/ESW2026-integration/scripts/wait-wired-clock.sh enP8p1s0 192.168.50.22/24
+TimeoutStartSec=210
+# Keep CPU preprocessing bounded while sharing the GPU with cabin DMS.
+Environment=OMP_NUM_THREADS=1
+Environment=OPENBLAS_NUM_THREADS=1
+ExecStart=/bin/bash %h/EWS/ESW2026-integration/scripts/run-audio.sh --diagnostics
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+KillSignal=SIGINT
+SuccessExitStatus=130
+
+[Install]
+WantedBy=default.target

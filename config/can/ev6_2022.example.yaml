@@ -1,0 +1,23 @@
+# This is intentionally not a guessed EV6 signal map.
+# Export/obtain the DBC for the exact vehicle fingerprint, validate it on a
+# recorded drive, then copy this file to an untracked deployment configuration.
+vehicle: kia_ev6
+model_year: 2022
+receive_only: true
+dbc_path: null
+required_signals:
+  speed_mps: null
+  steering_wheel_deg: null
+  brake_pressed: null
+  accelerator_pct: null
+  left_blinker: null
+  right_blinker: null
+  hazard_lights: null
+  headlights_on: null
+  wiper_level: null
+  gear: null
+validation:
+  known_stationary_log: null
+  known_drive_log: null
+  max_counter_errors: 0
+

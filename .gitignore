@@ -1,0 +1,92 @@
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+build/
+dist/
+logs/
+recordings/
+artifacts/*
+!artifacts/README.md
+*.engine
+*.onnx
+*.pt
+.env
+
+# Keep only the small, validated initial audio model under version control.
+!artifacts/models/
+artifacts/models/*
+!artifacts/models/audio/
+artifacts/models/audio/*
+!artifacts/models/audio/initial_model/
+artifacts/models/audio/initial_model/*
+!artifacts/models/audio/initial_model/audio_event.json
+!artifacts/models/audio/initial_model/audio_event.onnx
+!artifacts/models/audio/initial_model/audio_event_best.pt
+!artifacts/models/audio/initial_model/final_test_report.json
+!artifacts/models/audio/initial_model/training_report.json
+
+# STM32 / G29 development files
+# Python
+# STM32 generated build output
+**/Debug/
+**/Release/
+*.o
+*.d
+*.su
+*.cyclo
+*.elf
+*.bin
+*.hex
+*.map
+*.list
+# Local IDE state and backups
+.metadata/
+g29_backups/
+# Local credentials and agent settings
+.env.*
+!.env.example
+.aws/
+.codex/
+.agents/
+# Offline upload package
+*.bundle
+
+# Board runtime environments and local review evidence
+.venv-risk/
+/artifacts/models/tts/
+/artifacts/reviews/
+
+# Keep the exact models used by the integrated boards available after clone.
+!artifacts/models/dms.pt
+!artifacts/audio/initial_model/audio_event_best.pt
+!artifacts/audio/initial_model/audio_event.onnx
+!artifacts/deployment/
+!artifacts/deployment/manifest.json
+!artifacts/audio/
+!artifacts/audio/initial_model/
+!artifacts/audio/initial_model/*
+!artifacts/models/risk/
+!artifacts/models/risk/B/
+!artifacts/models/risk/B/*
+!artifacts/models/risk/final-sensors-v3/
+!artifacts/models/risk/final-sensors-v3/**
+!artifacts/tts/
+!artifacts/tts/supertonic-ko-f1/
+!artifacts/tts/supertonic-ko-f1/*
+
+
+.codrive-deployment.json
+
+# Portable validated signal auxiliary weights; build ONNX/TensorRT on deployment hardware.
+!artifacts/models/vision/
+artifacts/models/vision/*
+!artifacts/models/vision/signal-recapture-20261027.pt
+!artifacts/models/vision/signal-recapture-20261027.metadata.json
+!artifacts/models/vision/signal-recapture-20261027.training.csv
+# Calibration captures are local evidence, not shared configuration.
+/config/camera/registration-lossless/
+/config/camera/*.capture.jpg

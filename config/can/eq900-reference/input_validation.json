@@ -1,0 +1,11 @@
+{
+  "brake": true,
+  "steer": true,
+  "pedal": true,
+  "scope": "Mappings compared on one 2018 EQ900 while stationary; validate against each vehicle.",
+  "checks": [
+    "Brake released/pressed/released matched 0/1/0",
+    "Steering baseline and approximately 90-degree left turn compared",
+    "Relative accelerator input released/pressed/released compared with engine off"
+  ]
+}

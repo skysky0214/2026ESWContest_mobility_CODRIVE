@@ -1,0 +1,12 @@
+vehicle: genesis_eq900_2018_reference
+protocol: eq900_fixed_obd
+interface_type: slcan
+usb_vid: 0x16d0
+usb_pid: 0x117e
+bitrate: 500000
+tty_baudrate: 115200
+receive_only: false
+read_requests_only: true
+reference_repository: git@github.com:skskelwl/eq900-canable-monitor.git
+reference_commit: fa477535338e82ba7f17a6e1847a3d10acaaec47
+validation_scope: Single 2018 EQ900 stationary comparison; verify on the connected vehicle.

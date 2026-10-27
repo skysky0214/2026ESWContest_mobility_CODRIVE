@@ -1,0 +1,1493 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>CODRIVE HMI</title>
+  <style>
+    :root {
+      --bg: #071015;
+      --panel: #101a20;
+      --panel-soft: #142028;
+      --line: rgba(216, 230, 236, 0.16);
+      --text: #f2f7f9;
+      --muted: #94a6ae;
+      --normal: #36d39a;
+      --caution: #f5c84b;
+      --warning: #ff933d;
+      --emergency: #ff4d4d;
+      --cyan: #6bd7ff;
+      --shadow: rgba(0, 0, 0, 0.42);
+      --risk-color: var(--normal);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+      background: #000;
+      color: var(--text);
+      font-family: "Noto Sans KR", "Pretendard", "Segoe UI", system-ui, sans-serif;
+      letter-spacing: 0;
+    }
+
+    body {
+      display: grid;
+      place-items: center;
+    }
+
+    .hmi {
+      width: min(100vw, calc(100vh * 16 / 9));
+      height: min(100vh, calc(100vw * 9 / 16));
+      min-width: 320px;
+      min-height: 180px;
+      display: grid;
+      grid-template-rows: 11% 79% 10%;
+      background:
+        radial-gradient(circle at 50% 35%, rgba(62, 94, 108, 0.18), transparent 42%),
+        linear-gradient(135deg, #071015 0%, #0b1419 50%, #05090d 100%);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 24px 70px var(--shadow);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .header {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      padding: 18px 30px 12px;
+      border-bottom: 1px solid var(--line);
+      background: rgba(9, 17, 22, 0.72);
+    }
+
+    .brand-block {
+      display: flex;
+      align-items: baseline;
+      gap: 24px;
+      min-width: 0;
+    }
+
+    .brand {
+      font-size: clamp(22px, 2.6vw, 34px);
+      font-weight: 800;
+      letter-spacing: 0.09em;
+    }
+
+    .system-state {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: clamp(11px, 1.25vw, 15px);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .system-dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: var(--normal);
+      box-shadow: 0 0 12px rgba(54, 211, 154, 0.8);
+    }
+
+    .system-state.degraded {
+      color: #ffd7a3;
+    }
+
+    .system-state.degraded .system-dot {
+      background: var(--warning);
+      box-shadow: 0 0 12px rgba(255, 147, 61, 0.85);
+    }
+
+    .header-meta {
+      display: flex;
+      align-items: center;
+      gap: 26px;
+      color: #d9e6eb;
+      font-size: clamp(14px, 1.5vw, 20px);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .weather {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .weather-icon {
+      font-size: 1.25em;
+    }
+
+    .clock-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .main {
+      display: grid;
+      grid-template-columns: 75% 25%;
+      min-height: 0;
+    }
+
+    .assist {
+      min-width: 0;
+      min-height: 0;
+      position: relative;
+      display: grid;
+      place-items: center;
+      padding: 26px;
+      overflow: hidden;
+      border-right: 1px solid var(--line);
+      background: #071015;
+      transition: border-color 220ms ease, box-shadow 220ms ease, background 220ms ease;
+    }
+
+    .camera-feed,
+    .camera-shade,
+    .camera-state {
+      position: absolute;
+      inset: 0;
+    }
+
+    .camera-feed {
+      z-index: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      opacity: 0;
+      background: #03070a;
+      transition: opacity 260ms ease;
+    }
+
+    .assist.camera-live .camera-feed {
+      opacity: 1;
+    }
+
+    .camera-shade {
+      z-index: 1;
+      opacity: 0;
+      pointer-events: none;
+      background:
+        linear-gradient(180deg, rgba(2, 7, 10, 0.32), transparent 28%, transparent 68%, rgba(2, 7, 10, 0.62)),
+        radial-gradient(circle at 50% 50%, transparent 40%, rgba(2, 7, 10, 0.3) 100%);
+      transition: opacity 220ms ease;
+    }
+
+    .assist.camera-live .camera-shade {
+      opacity: 1;
+    }
+
+    .camera-state {
+      z-index: 2;
+      display: none;
+      inset: 40px auto auto 50%;
+      transform: translateX(-50%);
+      grid-auto-flow: column;
+      align-items: center;
+      gap: 10px;
+      width: max-content;
+      max-width: calc(100% - 100px);
+      padding: 9px 15px;
+      border: 1px solid rgba(216, 230, 236, 0.16);
+      border-radius: 7px;
+      color: var(--muted);
+      background: rgba(5, 12, 16, 0.76);
+      font-size: clamp(14px, 1.45vw, 20px);
+      font-weight: 800;
+      pointer-events: none;
+      backdrop-filter: blur(5px);
+    }
+
+    .camera-state-icon {
+      font-size: 1.15em;
+      opacity: 0.72;
+    }
+
+    .assist.camera-loading .camera-state,
+    .assist.camera-error .camera-state {
+      display: grid;
+    }
+
+    .assist.camera-error .camera-state {
+      color: #ffd7a3;
+    }
+
+    .assist::before {
+      content: "";
+      position: absolute;
+      inset: 24px;
+      border: 2px solid color-mix(in srgb, var(--risk-color) 44%, transparent);
+      border-radius: 8px;
+      opacity: 0.78;
+      box-shadow: inset 0 0 28px color-mix(in srgb, var(--risk-color) 12%, transparent);
+      pointer-events: none;
+      z-index: 4;
+      transition: border-color 220ms ease, box-shadow 220ms ease, opacity 220ms ease;
+    }
+
+    .assist.normal::before {
+      opacity: 0.34;
+    }
+
+    .assist.caution,
+    .assist.warning,
+    .assist.emergency {
+      background: radial-gradient(circle at 50% 48%, color-mix(in srgb, var(--risk-color) 11%, transparent), transparent 42%);
+    }
+
+    .assist.warning::before,
+    .assist.emergency::before {
+      animation: calmPulse 1.8s ease-in-out infinite;
+    }
+
+    @keyframes calmPulse {
+      0%, 100% {
+        opacity: 0.68;
+        box-shadow: inset 0 0 26px color-mix(in srgb, var(--risk-color) 12%, transparent), 0 0 16px color-mix(in srgb, var(--risk-color) 12%, transparent);
+      }
+      50% {
+        opacity: 1;
+        box-shadow: inset 0 0 42px color-mix(in srgb, var(--risk-color) 20%, transparent), 0 0 26px color-mix(in srgb, var(--risk-color) 20%, transparent);
+      }
+    }
+
+    .assist-content {
+      width: 100%;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 1fr auto;
+      align-items: center;
+      justify-items: center;
+      z-index: 3;
+      pointer-events: none;
+      opacity: 1;
+      transition: opacity 180ms ease;
+    }
+
+    .assist-content.is-fading {
+      opacity: 0;
+    }
+
+    .safe-view,
+    .risk-view {
+      width: 100%;
+      display: grid;
+      justify-items: center;
+      text-align: center;
+    }
+
+    .safe-title {
+      margin: 0 0 24px;
+      color: var(--normal);
+      font-size: clamp(30px, 4.4vw, 58px);
+      font-weight: 800;
+    }
+
+    .safe-car {
+      width: clamp(118px, 13vw, 172px);
+      height: clamp(118px, 13vw, 172px);
+      display: grid;
+      place-items: center;
+      margin-bottom: 20px;
+      border: 1px solid rgba(107, 215, 255, 0.18);
+      border-radius: 50%;
+      background: rgba(15, 31, 39, 0.54);
+      color: #dff8ff;
+      font-size: clamp(58px, 7vw, 88px);
+      box-shadow: 0 0 38px rgba(54, 211, 154, 0.08);
+    }
+
+    .safe-status {
+      margin: 0;
+      font-size: clamp(24px, 3vw, 40px);
+      font-weight: 800;
+    }
+
+    .safe-action {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: clamp(18px, 2vw, 27px);
+      font-weight: 700;
+    }
+
+    .assist.camera-live .safe-view {
+      width: auto;
+      min-width: min(76%, 560px);
+      align-self: end;
+      margin-bottom: clamp(18px, 3vh, 34px);
+      padding: 13px 26px 15px;
+      border: 1px solid rgba(223, 248, 255, 0.18);
+      border-radius: 8px;
+      background: rgba(4, 12, 16, 0.72);
+      box-shadow: 0 8px 28px rgba(0, 0, 0, 0.28);
+      backdrop-filter: blur(5px);
+    }
+
+    .assist.camera-live .safe-title,
+    .assist.camera-live .safe-car {
+      display: none;
+    }
+
+    .assist.camera-live .safe-status {
+      font-size: clamp(20px, 2.3vw, 32px);
+    }
+
+    .assist.camera-live .safe-action {
+      margin-top: 5px;
+      font-size: clamp(15px, 1.55vw, 21px);
+    }
+
+    .risk-view {
+      grid-template-rows: auto 1fr auto;
+      gap: 14px;
+      height: 100%;
+      align-content: center;
+    }
+
+    .risk-map {
+      width: min(56vw, 610px);
+      height: min(39vh, 292px);
+      position: relative;
+      margin: 2px auto 0;
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, transparent 49.8%, rgba(214, 233, 240, 0.12) 50%, transparent 50.2%),
+        linear-gradient(0deg, transparent 49.8%, rgba(214, 233, 240, 0.12) 50%, transparent 50.2%);
+    }
+
+    .ego-car {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 92px;
+      height: 118px;
+      display: grid;
+      place-items: center;
+      border: 1px solid rgba(223, 248, 255, 0.2);
+      border-radius: 48px 48px 22px 22px;
+      background: linear-gradient(180deg, rgba(31, 52, 61, 0.98), rgba(15, 27, 34, 0.98));
+      box-shadow: 0 0 24px rgba(107, 215, 255, 0.08);
+      font-size: 48px;
+    }
+
+    .direction-alert {
+      --x: -50%;
+      --y: -50%;
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(var(--x), var(--y));
+      min-width: 168px;
+      display: grid;
+      justify-items: center;
+      gap: 4px;
+      color: var(--risk-color);
+      text-shadow: 0 0 20px color-mix(in srgb, var(--risk-color) 45%, transparent);
+    }
+
+    .direction-alert[data-direction="FRONT"] { --y: -205%; }
+    .direction-alert[data-direction="REAR"] { --y: 102%; }
+    .direction-alert[data-direction="LEFT"] { --x: -192%; }
+    .direction-alert[data-direction="RIGHT"] { --x: 92%; }
+    .direction-alert[data-direction="FRONT LEFT"] { --x: -166%; --y: -170%; }
+    .direction-alert[data-direction="FRONT RIGHT"] { --x: 66%; --y: -170%; }
+    .direction-alert[data-direction="REAR LEFT"] { --x: -166%; --y: 66%; }
+    .direction-alert[data-direction="REAR RIGHT"] { --x: 66%; --y: 66%; }
+
+    .alert-icon {
+      font-size: clamp(32px, 4vw, 52px);
+      line-height: 1;
+    }
+
+    .arrow {
+      font-size: clamp(26px, 3.2vw, 42px);
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .risk-type {
+      font-size: clamp(17px, 1.8vw, 25px);
+      font-weight: 800;
+      color: #f6fbfd;
+      white-space: nowrap;
+    }
+
+    .risk-copy {
+      width: min(92%, 760px);
+      display: grid;
+      justify-items: center;
+      gap: 8px;
+    }
+
+    .assist.camera-live .risk-map {
+      border: 1px solid rgba(223, 248, 255, 0.13);
+      background-color: rgba(3, 10, 14, 0.38);
+      backdrop-filter: blur(2px);
+    }
+
+    .assist.camera-live .risk-copy {
+      padding: 12px 24px 14px;
+      border: 1px solid color-mix(in srgb, var(--risk-color) 38%, transparent);
+      border-radius: 8px;
+      background: rgba(3, 9, 13, 0.76);
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.34);
+      backdrop-filter: blur(6px);
+    }
+
+    .risk-level {
+      margin: 0;
+      color: var(--risk-color);
+      font-size: clamp(20px, 2.5vw, 36px);
+      font-weight: 900;
+    }
+
+    .risk-action {
+      margin: 0;
+      color: var(--text);
+      font-size: clamp(42px, 6.6vw, 86px);
+      line-height: 1.04;
+      font-weight: 900;
+    }
+
+    .risk-reason {
+      margin: 0;
+      color: #d9e6eb;
+      font-size: clamp(20px, 2.35vw, 34px);
+      font-weight: 800;
+    }
+
+    .risk-meta {
+      color: var(--muted);
+      font-size: clamp(15px, 1.45vw, 21px);
+      font-weight: 700;
+      min-height: 28px;
+    }
+
+    .tts {
+      align-self: end;
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 34px;
+      padding: 0 14px;
+      color: #c8d6dc;
+      border: 1px solid rgba(216, 230, 236, 0.12);
+      border-radius: 6px;
+      background: rgba(7, 16, 21, 0.54);
+      font-size: clamp(13px, 1.25vw, 17px);
+      font-weight: 700;
+      visibility: hidden;
+    }
+
+    .tts.active {
+      visibility: visible;
+    }
+
+    .vehicle {
+      display: grid;
+      grid-template-rows: auto auto 1fr;
+      gap: 22px;
+      padding: 28px 28px 24px;
+      background: rgba(13, 22, 28, 0.82);
+      min-width: 0;
+    }
+
+    .panel-title {
+      margin: 0;
+      color: #aab9c0;
+      font-size: clamp(15px, 1.35vw, 20px);
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-align: center;
+    }
+
+    .speed {
+      display: grid;
+      justify-items: center;
+      gap: 0;
+      padding: 12px 0 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .speed-value {
+      font-variant-numeric: tabular-nums;
+      font-size: clamp(66px, 8.3vw, 108px);
+      line-height: 0.96;
+      font-weight: 900;
+    }
+
+    .speed-unit {
+      color: var(--muted);
+      font-size: clamp(15px, 1.4vw, 20px);
+      font-weight: 800;
+    }
+
+    .vehicle-list {
+      display: grid;
+      align-content: start;
+      gap: 20px;
+      min-width: 0;
+    }
+
+    .vehicle-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 12px;
+      align-items: center;
+      min-width: 0;
+      color: #e7f0f3;
+      font-size: clamp(14px, 1.35vw, 19px);
+      font-weight: 800;
+    }
+
+    .vehicle-label {
+      min-width: 0;
+      color: #91a3ab;
+      white-space: nowrap;
+    }
+
+    .vehicle-value {
+      font-variant-numeric: tabular-nums;
+      white-space: nowrap;
+    }
+
+    .steer-icon {
+      color: var(--cyan);
+      margin-right: 6px;
+    }
+
+    .accel-wrap {
+      grid-column: 1 / -1;
+      width: 100%;
+      height: 9px;
+      border-radius: 999px;
+      overflow: hidden;
+      background: rgba(223, 248, 255, 0.12);
+    }
+
+    .accel-bar {
+      width: 0%;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--normal));
+      border-radius: inherit;
+      transition: width 220ms ease;
+    }
+
+    .fallback {
+      display: block;
+      visibility: hidden;
+      padding: 14px;
+      border: 1px solid rgba(255, 147, 61, 0.3);
+      border-radius: 8px;
+      background: rgba(255, 147, 61, 0.08);
+      color: #ffd7a3;
+      font-weight: 800;
+      line-height: 1.35;
+      font-size: clamp(13px, 1.2vw, 17px);
+    }
+
+    .fallback.visible {
+      visibility: visible;
+    }
+
+    .status-bar {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      align-items: center;
+      gap: 16px;
+      padding: 0 30px;
+      border-top: 1px solid var(--line);
+      background: rgba(8, 15, 20, 0.8);
+    }
+
+    .status-item {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-width: 0;
+      color: #d6e4e9;
+      font-size: clamp(14px, 1.45vw, 21px);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .status-item.changed {
+      color: var(--risk-color);
+    }
+
+    .status-icon {
+      font-size: 1.18em;
+    }
+
+    .test-controls {
+      position: absolute;
+      right: 18px;
+      bottom: 84px;
+      z-index: 4;
+      display: flex;
+      gap: 6px;
+      opacity: 0.35;
+      transition: opacity 160ms ease;
+    }
+
+    .test-controls:hover {
+      opacity: 1;
+    }
+
+    .test-controls.hidden {
+      display: none;
+    }
+
+    .test-controls button {
+      width: 38px;
+      height: 34px;
+      border: 1px solid rgba(216, 230, 236, 0.18);
+      border-radius: 6px;
+      background: rgba(10, 18, 23, 0.9);
+      color: #dce8ec;
+      font: inherit;
+      font-size: 13px;
+      font-weight: 900;
+      cursor: pointer;
+    }
+
+    .test-controls button:hover,
+    .test-controls button:focus-visible {
+      outline: none;
+      border-color: var(--risk-color);
+      color: #fff;
+    }
+
+    @media (max-aspect-ratio: 16 / 9) {
+      .header {
+        padding-inline: 24px;
+      }
+
+      .vehicle {
+        padding-inline: 22px;
+      }
+
+      .status-bar {
+        padding-inline: 22px;
+        gap: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="hmi" id="hmiRoot">
+    <header class="header">
+      <div class="brand-block">
+        <div class="brand">CODRIVE</div>
+        <div class="system-state" id="systemState">
+          <span class="system-dot"></span>
+          <span id="systemText">SYSTEM NORMAL</span>
+        </div>
+      </div>
+      <div class="header-meta">
+        <div class="weather">
+          <span class="weather-icon" id="weatherIcon">◌</span>
+          <span id="weatherText">날씨 연결 중</span>
+        </div>
+        <a class="clock-link" href="https://time.now" target="_blank" rel="noopener" aria-label="Time.Now 시간 출처">
+          <time id="clock">--:--</time>
+        </a>
+      </div>
+    </header>
+
+    <main class="main">
+      <section class="assist normal" id="assistPanel" aria-live="polite">
+        <img class="camera-feed" id="frontCamera" alt="전방 외부 카메라 실시간 영상">
+        <div class="camera-shade" aria-hidden="true"></div>
+        <div class="camera-state" id="cameraState" aria-hidden="true">
+          <span class="camera-state-icon">📷</span>
+          <span id="cameraStateText">외부 카메라 연결 중</span>
+        </div>
+        <div class="assist-content" id="assistContent"></div>
+      </section>
+
+      <aside class="vehicle" aria-label="Vehicle Status">
+        <h1 class="panel-title">VEHICLE</h1>
+        <div class="speed">
+          <div class="speed-value" id="speedValue">0</div>
+          <div class="speed-unit">km/h</div>
+        </div>
+        <div class="vehicle-list">
+          <div class="vehicle-row">
+            <span class="vehicle-label">STEERING</span>
+            <span class="vehicle-value" id="steeringValue">0°</span>
+          </div>
+          <div class="vehicle-row">
+            <span class="vehicle-label">BRAKE</span>
+            <span class="vehicle-value" id="brakeValue">OFF</span>
+          </div>
+          <div class="vehicle-row">
+            <span class="vehicle-label">TURN SIGNAL</span>
+            <span class="vehicle-value" id="turnSignalValue">OFF</span>
+          </div>
+          <div class="vehicle-row">
+            <span class="vehicle-label">ACCELERATOR</span>
+            <span class="vehicle-value" id="acceleratorValue">0%</span>
+            <div class="accel-wrap" aria-hidden="true">
+              <div class="accel-bar" id="acceleratorBar"></div>
+            </div>
+          </div>
+          <div class="fallback" id="fallbackBox">
+            CAN 데이터<br>
+            연결 대기 중
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="status-bar">
+      <div class="status-item" id="laneStatus"><span class="status-icon">🛣</span><span>차선 정상</span></div>
+      <div class="status-item" id="trafficStatus"><span class="status-icon">🚦</span><span>신호 정상</span></div>
+      <div class="status-item" id="audioStatus"><span class="status-icon">🔊</span><span>음향 정상</span></div>
+      <div class="status-item" id="connectionStatus"><span class="status-icon">📡</span><span>연결 정상</span></div>
+    </footer>
+
+    <div class="test-controls" id="testControls" aria-label="HMI test controls">
+      <button type="button" data-scenario="NORMAL" title="NORMAL: keyboard 1">1</button>
+      <button type="button" data-scenario="CAUTION" title="CAUTION: keyboard 2">2</button>
+      <button type="button" data-scenario="WARNING" title="WARNING: keyboard 3">3</button>
+      <button type="button" data-scenario="EMERGENCY" title="EMERGENCY: keyboard 4">4</button>
+    </div>
+  </div>
+
+  <script>
+    const pageQuery = new URLSearchParams(window.location.search);
+    const cameraQuery = pageQuery.get("camera");
+    const vehicleQuery = pageQuery.get("vehicle");
+    const defaultCameraStream = "http://192.168.50.21:8080/stream.mjpg";
+    const defaultVehicleEndpoint = ["http:", "https:"].includes(window.location.protocol)
+      ? new URL("/api/vehicle", window.location.href).href
+      : "http://127.0.0.1:8090/api/vehicle";
+
+    const hmiData = {
+      riskLevel: "NORMAL",
+      riskType: null,
+      direction: null,
+      action: "안전 운전하세요",
+      distance: null,
+      ttc: null,
+
+      speed: 0,
+      steering: 0,
+      brake: false,
+      accelerator: 0,
+      vehicleConnected: false,
+
+      weather: "CLEAR",
+      temperature: null,
+      weatherPending: true,
+      weatherError: false,
+      lane: "NORMAL",
+      trafficLight: "GREEN",
+      audio: "NORMAL",
+      connection: true,
+      systemDegraded: false,
+      ttsActive: false,
+      cameraStreamUrl: cameraQuery === "off" ? null : (cameraQuery || defaultCameraStream),
+      vehicleEndpoint: vehicleQuery === "off" ? null : (vehicleQuery || defaultVehicleEndpoint)
+    };
+
+    const scenarios = {
+      NORMAL: {
+        riskLevel: "NORMAL",
+        riskType: null,
+        direction: null,
+        action: "안전 운전하세요",
+        distance: null,
+        ttc: null,
+        speed: 42,
+        steering: 3,
+        brake: false,
+        accelerator: 18,
+        vehicleConnected: true,
+        weather: "CLEAR",
+        lane: "NORMAL",
+        trafficLight: "GREEN",
+        audio: "NORMAL",
+        connection: true,
+        systemDegraded: false,
+        ttsActive: false
+      },
+      CAUTION: {
+        riskLevel: "CAUTION",
+        riskType: "오른쪽 차량 접근",
+        direction: "RIGHT",
+        action: "오른쪽을 확인하세요",
+        distance: 14.6,
+        ttc: null,
+        speed: 39,
+        steering: -2,
+        brake: false,
+        accelerator: 12,
+        vehicleConnected: true,
+        weather: "CLEAR",
+        lane: "NORMAL",
+        trafficLight: "GREEN",
+        audio: "NORMAL",
+        connection: true,
+        systemDegraded: false,
+        ttsActive: true
+      },
+      WARNING: {
+        riskLevel: "WARNING",
+        riskType: "전방 보행자 접근",
+        direction: "FRONT",
+        action: "속도를 줄이세요",
+        distance: 8.2,
+        ttc: 2.1,
+        speed: 31,
+        steering: 1,
+        brake: false,
+        accelerator: 8,
+        vehicleConnected: true,
+        weather: "RAIN",
+        lane: "NORMAL",
+        trafficLight: "RED",
+        audio: "SIREN",
+        connection: true,
+        systemDegraded: false,
+        ttsActive: true
+      },
+      EMERGENCY: {
+        riskLevel: "EMERGENCY",
+        riskType: "전방 충돌 위험",
+        direction: "FRONT",
+        action: "즉시 정지",
+        distance: 3.1,
+        ttc: 0.8,
+        speed: 18,
+        steering: 0,
+        brake: true,
+        accelerator: 0,
+        vehicleConnected: true,
+        weather: "FOG",
+        lane: "DEPARTURE",
+        trafficLight: "RED",
+        audio: "SIREN",
+        connection: false,
+        systemDegraded: true,
+        ttsActive: true
+      }
+    };
+
+    const riskTheme = {
+      NORMAL: "#36d39a",
+      CAUTION: "#f5c84b",
+      WARNING: "#ff933d",
+      EMERGENCY: "#ff4d4d"
+    };
+
+    const weatherMeta = {
+      CLEAR: { icon: "☀", label: "맑음" },
+      CLOUDY: { icon: "☁", label: "흐림" },
+      RAIN: { icon: "🌧", label: "비" },
+      FOG: { icon: "🌫", label: "안개" },
+      SNOW: { icon: "❄", label: "눈" },
+      THUNDER: { icon: "⚡", label: "뇌우" }
+    };
+
+    const environmentState = {
+      coordinates: null,
+      locationLabel: "서울",
+      timeZone: "Asia/Seoul",
+      clockEpoch: Date.now(),
+      clockStartedAt: performance.now(),
+      clockIsExternal: false
+    };
+
+    const directionArrow = {
+      FRONT: "↑",
+      REAR: "↓",
+      LEFT: "←",
+      RIGHT: "→",
+      "FRONT LEFT": "↖",
+      "FRONT RIGHT": "↗",
+      "REAR LEFT": "↙",
+      "REAR RIGHT": "↘"
+    };
+
+    const riskLabel = {
+      NORMAL: "주행 안전",
+      CAUTION: "주의",
+      WARNING: "⚠ 전방 위험",
+      EMERGENCY: "⚠"
+    };
+
+    const elements = {
+      root: document.getElementById("hmiRoot"),
+      assistPanel: document.getElementById("assistPanel"),
+      assistContent: document.getElementById("assistContent"),
+      frontCamera: document.getElementById("frontCamera"),
+      cameraStateText: document.getElementById("cameraStateText"),
+      speedValue: document.getElementById("speedValue"),
+      steeringValue: document.getElementById("steeringValue"),
+      brakeValue: document.getElementById("brakeValue"),
+      acceleratorValue: document.getElementById("acceleratorValue"),
+      acceleratorBar: document.getElementById("acceleratorBar"),
+      weatherIcon: document.getElementById("weatherIcon"),
+      weatherText: document.getElementById("weatherText"),
+      clock: document.getElementById("clock"),
+      systemState: document.getElementById("systemState"),
+      systemText: document.getElementById("systemText"),
+      fallbackBox: document.getElementById("fallbackBox"),
+      laneStatus: document.getElementById("laneStatus"),
+      trafficStatus: document.getElementById("trafficStatus"),
+      audioStatus: document.getElementById("audioStatus"),
+      connectionStatus: document.getElementById("connectionStatus"),
+      testControls: document.getElementById("testControls")
+    };
+
+    const cameraRuntime = {
+      url: null,
+      connected: false,
+      retryTimer: null,
+      healthTimer: null,
+      generation: 0
+    };
+
+    const vehicleRuntime = {
+      endpoint: null,
+      pollTimer: null,
+      generation: 0,
+      connected: false
+    };
+
+    function setHMIData(nextData) {
+      const cameraChanged = Object.prototype.hasOwnProperty.call(nextData, "cameraStreamUrl");
+      const vehicleEndpointChanged = Object.prototype.hasOwnProperty.call(nextData, "vehicleEndpoint");
+      Object.assign(hmiData, nextData);
+      if (cameraChanged) setCameraStream(hmiData.cameraStreamUrl);
+      if (vehicleEndpointChanged) setVehicleEndpoint(hmiData.vehicleEndpoint);
+      updateHMI();
+    }
+
+    function setVehicleHMIData(nextData) {
+      Object.assign(hmiData, nextData);
+      renderVehicle();
+      renderHeader();
+      renderStatusBar();
+    }
+
+    function normalizeHTTPEndpoint(value) {
+      if (value === null || value === undefined || String(value).trim() === "") return null;
+      try {
+        const url = new URL(String(value), window.location.href);
+        if (!["http:", "https:"].includes(url.protocol)) return null;
+        return url.href;
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    function scheduleVehiclePoll(generation, delayMs) {
+      window.clearTimeout(vehicleRuntime.pollTimer);
+      if (!vehicleRuntime.endpoint || generation !== vehicleRuntime.generation) return;
+      vehicleRuntime.pollTimer = window.setTimeout(
+        () => pollVehicleTelemetry(generation),
+        delayMs
+      );
+    }
+
+    async function pollVehicleTelemetry(generation) {
+      if (!vehicleRuntime.endpoint || generation !== vehicleRuntime.generation) return;
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 800);
+      let nextDelayMs = 500;
+
+      try {
+        const response = await fetch(vehicleRuntime.endpoint, {
+          cache: "no-store",
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const payload = await response.json();
+        const vehicle = payload?.vehicle;
+        const connected = payload?.connected === true && vehicle?.can_valid === true;
+        const update = { vehicleConnected: connected };
+
+        if (connected) {
+          const speed = Number(vehicle.speed_kmh);
+          const steering = Number(vehicle.steering_wheel_deg);
+          const accelerator = Number(vehicle.accelerator_pct);
+          if (![speed, steering, accelerator].every(Number.isFinite)) {
+            throw new Error("Invalid vehicle telemetry");
+          }
+          update.speed = speed;
+          update.steering = steering;
+          update.brake = vehicle.brake_pressed === true;
+          update.accelerator = accelerator;
+          nextDelayMs = 50;
+        }
+
+        vehicleRuntime.connected = connected;
+        setVehicleHMIData(update);
+      } catch (_error) {
+        vehicleRuntime.connected = false;
+        setVehicleHMIData({ vehicleConnected: false });
+        nextDelayMs = 1000;
+      } finally {
+        window.clearTimeout(timeout);
+        scheduleVehiclePoll(generation, nextDelayMs);
+      }
+    }
+
+    function setVehicleEndpoint(value) {
+      const endpoint = normalizeHTTPEndpoint(value);
+      vehicleRuntime.generation += 1;
+      const generation = vehicleRuntime.generation;
+      window.clearTimeout(vehicleRuntime.pollTimer);
+      vehicleRuntime.endpoint = endpoint;
+      vehicleRuntime.connected = false;
+
+      if (!endpoint) {
+        setVehicleHMIData({ vehicleConnected: false });
+        return;
+      }
+      pollVehicleTelemetry(generation);
+    }
+
+    function normalizeCameraURL(value) {
+      return normalizeHTTPEndpoint(value);
+    }
+
+    function setCameraVisualState(state, text) {
+      elements.assistPanel.classList.toggle("camera-live", state === "live");
+      elements.assistPanel.classList.toggle("camera-loading", state === "loading");
+      elements.assistPanel.classList.toggle("camera-error", state === "error");
+      cameraRuntime.connected = state === "live";
+      if (text) elements.cameraStateText.textContent = text;
+      renderStatusBar();
+    }
+
+    function healthURLFor(streamURL) {
+      const url = new URL(streamURL);
+      url.pathname = "/health";
+      url.search = "";
+      url.hash = "";
+      return url.href;
+    }
+
+    async function checkCameraHealth(generation) {
+      if (!cameraRuntime.url || generation !== cameraRuntime.generation) return;
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 1500);
+      try {
+        const response = await fetch(healthURLFor(cameraRuntime.url), {
+          cache: "no-store",
+          signal: controller.signal
+        });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const health = await response.json();
+        const age = Number(health.frame_age_ms);
+        if (Number(health.sequence) < 1 || !Number.isFinite(age) || age > 3000) {
+          throw new Error("stale camera frame");
+        }
+        setCameraVisualState("live");
+      } catch (_error) {
+        setCameraVisualState("error", "외부 카메라 연결 대기");
+      } finally {
+        window.clearTimeout(timeout);
+        if (cameraRuntime.url && generation === cameraRuntime.generation) {
+          cameraRuntime.healthTimer = window.setTimeout(
+            () => checkCameraHealth(generation),
+            2000
+          );
+        }
+      }
+    }
+
+    function retryCameraImage(generation) {
+      if (!cameraRuntime.url || generation !== cameraRuntime.generation) return;
+      const url = new URL(cameraRuntime.url);
+      url.searchParams.set("_codrive_retry", Date.now().toString());
+      elements.frontCamera.src = url.href;
+    }
+
+    function setCameraStream(value) {
+      const url = normalizeCameraURL(value);
+      cameraRuntime.generation += 1;
+      const generation = cameraRuntime.generation;
+      window.clearTimeout(cameraRuntime.retryTimer);
+      window.clearTimeout(cameraRuntime.healthTimer);
+      cameraRuntime.url = url;
+      elements.frontCamera.removeAttribute("src");
+
+      if (!url) {
+        setCameraVisualState("off");
+        return;
+      }
+      setCameraVisualState("loading", "외부 카메라 연결 중");
+      elements.frontCamera.src = url;
+      checkCameraHealth(generation);
+    }
+
+    elements.frontCamera.addEventListener("load", () => {
+      if (cameraRuntime.url && !cameraRuntime.connected) setCameraVisualState("live");
+    });
+
+    elements.frontCamera.addEventListener("error", () => {
+      if (!cameraRuntime.url) return;
+      const generation = cameraRuntime.generation;
+      setCameraVisualState("error", "외부 카메라 연결 대기");
+      window.clearTimeout(cameraRuntime.retryTimer);
+      cameraRuntime.retryTimer = window.setTimeout(
+        () => retryCameraImage(generation),
+        2000
+      );
+    });
+
+    function updateHMI() {
+      const level = normalizeRiskLevel(hmiData.riskLevel);
+      elements.root.style.setProperty("--risk-color", riskTheme[level]);
+      elements.assistPanel.classList.remove("normal", "caution", "warning", "emergency");
+      elements.assistPanel.classList.add(level.toLowerCase());
+
+      renderAssist(level);
+      renderVehicle();
+      renderHeader();
+      renderStatusBar();
+    }
+
+    function normalizeRiskLevel(level) {
+      return ["NORMAL", "CAUTION", "WARNING", "EMERGENCY"].includes(level) ? level : "NORMAL";
+    }
+
+    function renderAssist(level) {
+      elements.assistContent.classList.add("is-fading");
+
+      window.setTimeout(() => {
+        if (level === "NORMAL") {
+          elements.assistContent.innerHTML = `
+            <div class="safe-view">
+              <h2 class="safe-title">주행 안전</h2>
+              <div class="safe-car" aria-hidden="true">🚗</div>
+              <p class="safe-status">현재 위험 없음</p>
+              <p class="safe-action">${escapeHTML(hmiData.action || "안전 운전하세요")}</p>
+            </div>
+            <div class="tts" aria-hidden="true">🔊 음성 안내 중</div>
+          `;
+        } else {
+          const direction = hmiData.direction || "FRONT";
+          const metaText = formatRiskMeta(hmiData.distance, hmiData.ttc);
+          const emergency = level === "EMERGENCY";
+
+          elements.assistContent.innerHTML = `
+            <div class="risk-view">
+              <div class="risk-map">
+                <div class="direction-alert" data-direction="${escapeHTML(direction)}">
+                  <div class="alert-icon">⚠</div>
+                  <div class="arrow">${directionArrow[direction] || "↑"}</div>
+                  <div class="risk-type">${escapeHTML(hmiData.riskType || "위험 감지")}</div>
+                </div>
+                <div class="ego-car" aria-label="현재 차량">🚗</div>
+              </div>
+              <div class="risk-copy">
+                <p class="risk-level">${riskLabel[level]}</p>
+                <p class="risk-action">${escapeHTML(hmiData.action || "주의하세요")}</p>
+                <p class="risk-reason">${escapeHTML(hmiData.riskType || "")}</p>
+                <div class="risk-meta">${emergency ? "" : metaText}</div>
+              </div>
+            </div>
+            <div class="tts ${hmiData.ttsActive ? "active" : ""}">🔊 음성 안내 중</div>
+          `;
+        }
+
+        elements.assistContent.classList.remove("is-fading");
+      }, 90);
+    }
+
+    function renderVehicle() {
+      const speed = clampNumber(hmiData.speed, 0, 240);
+      const steering = clampNumber(hmiData.steering, -540, 540);
+      const accelerator = clampNumber(hmiData.accelerator, 0, 100);
+
+      elements.speedValue.textContent = Math.round(speed);
+      elements.steeringValue.innerHTML = `<span class="steer-icon">${steeringIcon(steering)}</span>${formatSigned(steering)}°`;
+      elements.brakeValue.textContent = hmiData.brake ? "ON" : "OFF";
+      elements.brakeValue.style.color = hmiData.brake ? "var(--emergency)" : "var(--text)";
+      elements.acceleratorValue.textContent = `${Math.round(accelerator)}%`;
+      elements.acceleratorBar.style.width = `${accelerator}%`;
+      elements.fallbackBox.classList.toggle("visible", !hmiData.vehicleConnected);
+    }
+
+    function renderHeader() {
+      const weather = hmiData.weather || "CLEAR";
+      const weatherView = weatherMeta[weather] || weatherMeta.CLEAR;
+      elements.weatherIcon.textContent = hmiData.weatherPending ? "◌" : weatherView.icon;
+
+      if (hmiData.weatherPending) {
+        elements.weatherText.textContent = "날씨 연결 중";
+      } else if (hmiData.weatherError || !Number.isFinite(hmiData.temperature)) {
+        elements.weatherText.textContent = "날씨 연결 오류";
+      } else {
+        elements.weatherText.textContent = `${hmiData.temperature.toFixed(1)}°C · ${weatherView.label}`;
+      }
+
+      elements.weatherText.parentElement.title = `${environmentState.locationLabel} 실시간 날씨 · Open-Meteo`;
+
+      const degraded = Boolean(
+        hmiData.systemDegraded || !hmiData.connection || !hmiData.vehicleConnected
+      );
+      elements.systemState.classList.toggle("degraded", degraded);
+      elements.systemText.textContent = degraded ? "SYSTEM DEGRADED" : "SYSTEM NORMAL";
+    }
+
+    function renderStatusBar() {
+      setStatus(elements.laneStatus, "🛣", hmiData.lane === "DEPARTURE" ? "차선 이탈" : "차선 정상", hmiData.lane !== "NORMAL");
+      setStatus(elements.trafficStatus, "🚦", hmiData.trafficLight === "RED" ? "RED" : "신호 정상", hmiData.trafficLight === "RED");
+      setStatus(elements.audioStatus, "🔊", hmiData.audio === "SIREN" ? "사이렌 감지" : "음향 정상", hmiData.audio !== "NORMAL");
+      if (!hmiData.vehicleConnected) {
+        setStatus(elements.connectionStatus, "🚘", "CAN 연결 대기", true);
+      } else if (!hmiData.connection) {
+        setStatus(elements.connectionStatus, "📡", "연결 불안정", true);
+      } else if (cameraRuntime.url && !cameraRuntime.connected) {
+        setStatus(elements.connectionStatus, "📷", "외부 영상 대기", true);
+      } else if (cameraRuntime.connected) {
+        setStatus(elements.connectionStatus, "📷", "외부 영상 정상", false);
+      } else {
+        setStatus(elements.connectionStatus, "📡", "연결 정상", false);
+      }
+    }
+
+    function setStatus(element, icon, text, changed) {
+      element.classList.toggle("changed", changed);
+      element.innerHTML = `<span class="status-icon">${icon}</span><span>${escapeHTML(text)}</span>`;
+    }
+
+    function formatRiskMeta(distance, ttc) {
+      const parts = [];
+      if (Number.isFinite(distance)) parts.push(`${distance.toFixed(1)} m`);
+      if (Number.isFinite(ttc)) parts.push(`TTC ${ttc.toFixed(1)} s`);
+      return parts.join(" · ");
+    }
+
+    function formatSigned(value) {
+      const rounded = Math.round(value);
+      return rounded > 0 ? `+${rounded}` : `${rounded}`;
+    }
+
+    function steeringIcon(value) {
+      if (value > 2) return "↱";
+      if (value < -2) return "↰";
+      return "→";
+    }
+
+    function clampNumber(value, min, max) {
+      const numeric = Number(value);
+      if (!Number.isFinite(numeric)) return min;
+      return Math.min(max, Math.max(min, numeric));
+    }
+
+    function escapeHTML(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function updateClock() {
+      if (environmentState.clockIsExternal) {
+        const elapsed = performance.now() - environmentState.clockStartedAt;
+        const apiNow = new Date(environmentState.clockEpoch + elapsed);
+        elements.clock.textContent = apiNow.toLocaleTimeString("ko-KR", {
+          hour: "2-digit",
+          minute: "2-digit",
+          hour12: false,
+          timeZone: environmentState.timeZone
+        });
+        elements.clock.title = `${environmentState.timeZone} · Time.Now 동기화`;
+        return;
+      }
+
+      elements.clock.textContent = new Date().toLocaleTimeString("ko-KR", {
+        hour: "2-digit",
+        minute: "2-digit",
+        hour12: false,
+        timeZone: environmentState.timeZone
+      });
+      elements.clock.title = `${environmentState.timeZone} · 기기 시간 사용 중`;
+    }
+
+    function weatherTypeFromCode(code) {
+      if (code === 0) return "CLEAR";
+      if ([1, 2, 3].includes(code)) return "CLOUDY";
+      if ([45, 48].includes(code)) return "FOG";
+      if ((code >= 51 && code <= 67) || (code >= 80 && code <= 82)) return "RAIN";
+      if ((code >= 71 && code <= 77) || (code >= 85 && code <= 86)) return "SNOW";
+      if (code >= 95) return "THUNDER";
+      return "CLOUDY";
+    }
+
+    function getCoordinates() {
+      if (environmentState.coordinates) return Promise.resolve(environmentState.coordinates);
+
+      const seoul = {
+        latitude: 37.5665,
+        longitude: 126.978,
+        isFallback: true
+      };
+
+      if (!navigator.geolocation) {
+        environmentState.coordinates = seoul;
+        return Promise.resolve(seoul);
+      }
+
+      return new Promise((resolve) => {
+        navigator.geolocation.getCurrentPosition(
+          ({ coords }) => resolve({
+            latitude: coords.latitude,
+            longitude: coords.longitude,
+            isFallback: false
+          }),
+          () => resolve(seoul),
+          { enableHighAccuracy: false, timeout: 6000, maximumAge: 600000 }
+        );
+      }).then((coordinates) => {
+        environmentState.coordinates = coordinates;
+        environmentState.locationLabel = coordinates.isFallback ? "서울" : "현재 위치";
+        return coordinates;
+      });
+    }
+
+    async function fetchJSON(url) {
+      const controller = new AbortController();
+      const timeout = window.setTimeout(() => controller.abort(), 8000);
+
+      try {
+        const response = await fetch(url, { signal: controller.signal, cache: "no-store" });
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        return await response.json();
+      } finally {
+        window.clearTimeout(timeout);
+      }
+    }
+
+    function syncClock(timeData) {
+      const apiEpoch = Date.parse(timeData.utc_datetime || timeData.datetime);
+      if (!Number.isFinite(apiEpoch)) throw new Error("Invalid time response");
+
+      environmentState.clockEpoch = apiEpoch;
+      environmentState.clockStartedAt = performance.now();
+      environmentState.clockIsExternal = true;
+      environmentState.timeZone = timeData.timezone || environmentState.timeZone;
+      updateClock();
+    }
+
+    async function refreshEnvironment() {
+      const coordinates = await getCoordinates();
+      const latitude = coordinates.latitude.toFixed(5);
+      const longitude = coordinates.longitude.toFixed(5);
+      const weatherURL = `https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&timezone=auto&forecast_days=1`;
+      const [weatherResult] = await Promise.allSettled([fetchJSON(weatherURL)]);
+
+      if (weatherResult.status === "fulfilled") {
+        const weatherData = weatherResult.value;
+        const temperature = Number(weatherData.current?.temperature_2m);
+        const weatherCode = Number(weatherData.current?.weather_code);
+
+        if (Number.isFinite(temperature) && Number.isFinite(weatherCode)) {
+          environmentState.timeZone = weatherData.timezone || environmentState.timeZone;
+          setHMIData({
+            weather: weatherTypeFromCode(weatherCode),
+            temperature,
+            weatherPending: false,
+            weatherError: false
+          });
+        } else {
+          setHMIData({ weatherPending: false, weatherError: true });
+          console.warn("CODRIVE weather response was invalid");
+        }
+      } else {
+        setHMIData({ weatherPending: false, weatherError: true });
+        console.warn("CODRIVE weather update failed:", weatherResult.reason);
+      }
+
+      const timeZonePath = environmentState.timeZone
+        .split("/")
+        .map(encodeURIComponent)
+        .join("/");
+      const timeURL = `https://time.now/developer/api/timezone/${timeZonePath}?_=${Date.now()}`;
+      const [timeResult] = await Promise.allSettled([fetchJSON(timeURL)]);
+
+      if (timeResult.status === "fulfilled") {
+        try {
+          syncClock(timeResult.value);
+        } catch (error) {
+          console.warn("CODRIVE time response was invalid:", error);
+        }
+      } else {
+        console.warn("CODRIVE time update failed; using device time:", timeResult.reason);
+      }
+    }
+
+    function activateScenario(level) {
+      const liveEnvironment = {
+        weather: hmiData.weather,
+        temperature: hmiData.temperature,
+        weatherPending: hmiData.weatherPending,
+        weatherError: hmiData.weatherError
+      };
+      setHMIData({ ...scenarios[level], ...liveEnvironment });
+    }
+
+    elements.testControls.addEventListener("click", (event) => {
+      const button = event.target.closest("[data-scenario]");
+      if (!button) return;
+      activateScenario(button.dataset.scenario);
+    });
+
+    window.addEventListener("keydown", (event) => {
+      const keyMap = {
+        "1": "NORMAL",
+        "2": "CAUTION",
+        "3": "WARNING",
+        "4": "EMERGENCY"
+      };
+
+      if (keyMap[event.key]) {
+        activateScenario(keyMap[event.key]);
+      }
+
+      if (event.key.toLowerCase() === "t") {
+        elements.testControls.classList.toggle("hidden");
+      }
+    });
+
+    window.CODRIVE_HMI = {
+      data: hmiData,
+      setData: setHMIData,
+      setCameraStream,
+      setVehicleEndpoint,
+      update: updateHMI,
+      refreshEnvironment,
+      scenarios
+    };
+
+    updateClock();
+    updateHMI();
+    setCameraStream(hmiData.cameraStreamUrl);
+    setVehicleEndpoint(hmiData.vehicleEndpoint);
+    refreshEnvironment();
+    window.setInterval(updateClock, 1000);
+    window.setInterval(refreshEnvironment, 600000);
+  </script>
+</body>
+</html>

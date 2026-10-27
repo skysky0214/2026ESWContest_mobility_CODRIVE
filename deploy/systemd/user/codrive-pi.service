@@ -1,0 +1,18 @@
+[Unit]
+Description=CODRIVE Pi DDS receiver and live HMI
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+WorkingDirectory=%h/ESW2026-integration
+Environment=CODRIVE_LOG_TO_FILE=1
+ExecStartPre=/bin/bash %h/ESW2026-integration/scripts/wait-wired-clock.sh eth0 192.168.50.10/24
+TimeoutStartSec=210
+ExecStart=/bin/bash %h/ESW2026-integration/scripts/run-pi.sh
+Restart=on-failure
+RestartSec=3
+TimeoutStopSec=20
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,6 @@
+{
+  "left_button": 5,
+  "right_button": 4,
+  "mode": "toggle",
+  "device": "/dev/input/js0"
+}

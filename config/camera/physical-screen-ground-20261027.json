@@ -1,0 +1,104 @@
+{
+  "schema_version": 1,
+  "image_size": [
+    1280,
+    720
+  ],
+  "image_points": [
+    [
+      185.04653930664062,
+      394.6971435546875
+    ],
+    [
+      1120.3118896484375,
+      378.3963623046875
+    ],
+    [
+      1125.7225341796875,
+      682.9638061523438
+    ],
+    [
+      190.52574157714844,
+      680.7754516601562
+    ]
+  ],
+  "ground_points_m": [
+    [
+      -23.40572738647461,
+      52.47481392746861
+    ],
+    [
+      23.40572738647461,
+      52.47481392746861
+    ],
+    [
+      2.2882678508758545,
+      6.754245657405026
+    ],
+    [
+      -2.2882678508758545,
+      6.754245657405026
+    ]
+  ],
+  "maximum_distance_m": 30,
+  "path_half_width_m": 1.5,
+  "calibration_source": "Physical rectified OX08BC camera -> fixed CARLA monitor -> virtual ground plane",
+  "camera_spec": {
+    "native_size": [
+      1920,
+      1080
+    ],
+    "horizontal_fov_deg": 60,
+    "mount_forward_m": 1.8,
+    "mount_right_m": 0,
+    "mount_height_m": 1.6,
+    "pitch_deg": 0
+  },
+  "limitations": [
+    "Valid only for this fixed physical camera/monitor/zoom configuration",
+    "Metric scale is CARLA virtual-camera specification; assumes flat virtual ground",
+    "Camera or monitor movement requires recalibration; no real-road metric claim"
+  ],
+  "registration": {
+    "marker_ids": [
+      10,
+      11,
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18
+    ],
+    "frames": 8,
+    "median_reprojection_px": 0.5998760461807251,
+    "max_reprojection_px": 1.7930959463119507,
+    "max_leave_one_marker_out_px": 1.8194944858551025,
+    "p95_corner_jitter_px": 0.3107686772942542,
+    "screen_to_rectified_camera": [
+      [
+        0.5606536868047504,
+        0.011395383399526183,
+        69.3502700666095
+      ],
+      [
+        -0.02538884436078964,
+        0.5869083695265568,
+        49.05788291653344
+      ],
+      [
+        -3.924682253342347e-05,
+        8.701569989782268e-07,
+        1.0
+      ]
+    ]
+  },
+  "created_time_ns": 1793084756927295186,
+  "fov_update": {
+    "from_deg": 90,
+    "to_deg": 60,
+    "focal_length_ratio": 1.7320508075688772,
+    "method": "Analytic zero-pitch pinhole update of forward ground coordinates; physical screen/lens registration unchanged"
+  }
+}

@@ -1,0 +1,11 @@
+# Position: fresh GNSS fix, or explicitly configured coordinates (no guessed location).
+enabled: true
+latitude: null
+longitude: null
+timezone: Asia/Seoul
+weather_interval_s: 3600
+weather_max_age_s: 4500
+timeout_s: 8
+retry_s: 60
+cache_path: artifacts/cache/environment.json
+location_radius_km: 20

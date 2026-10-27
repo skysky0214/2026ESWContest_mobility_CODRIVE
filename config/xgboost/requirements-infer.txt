@@ -1,0 +1,4 @@
+# Optional CPU inference for the integrated Pi HMI. No training dependencies.
+numpy>=1.24,<3
+xgboost-cpu>=3.0,<4
+PyYAML>=6.0,<7

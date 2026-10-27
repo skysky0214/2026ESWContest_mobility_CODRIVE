@@ -1,0 +1,30 @@
+# Initial experimental tuning; independent of sensor topics and device profiles.
+schema_version: 1
+risk:
+  road_camera_ids: [front]
+  caution_score: 30
+  warning_score: 60
+  emergency_score: 90
+  caution_exit_score: 20
+  warning_exit_score: 45
+  emergency_exit_score: 75
+  inattention_weight: 1.3
+  phone_weight: 1.5
+  drowsiness_weight: 1.7
+  drowsy_inattention_weight: 2.0
+  eyes_closed_hold_ms: 800
+  red_light_base_score: 50
+  red_light_speed_bonus: 20
+  yellow_light_base_score: 30
+  driver_inattention_score: 60
+  driver_phone_score: 60
+  driver_drowsiness_score: 85
+  siren_base_score: 35
+  horn_base_score: 30
+  audio_speed_bonus: 15
+  audio_direction_bonus: 15
+  max_context_skew_ms: 200
+  release_hold_ms: 500
+  state_gap_reset_ms: 1000
+  duplicate_cooldown_ms: 900
+  event_ttl_ms: 1500

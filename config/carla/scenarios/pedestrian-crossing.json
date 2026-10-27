@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "id": "pedestrian-crossing",
+  "name": "보행자 돌발 횡단",
+  "map": "Town10HD_Opt",
+  "spawn_index": 10,
+  "crossing_forward_m": 45.0,
+  "lateral_start_m": -3.0,
+  "lateral_end_m": 3.0,
+  "pedestrian_speed_mps": 2.5,
+  "trigger_ttc_s": 1.2,
+  "trigger_max_distance_m": 25.0,
+  "minimum_speed_kmh": 5.0,
+  "recommended_speed_kmh": 40.0,
+  "pedestrian_blueprint": "walker.pedestrian.0001",
+  "trigger_mode": "distance",
+  "trigger_distance_m": 16.0,
+  "trigger_lateral_tolerance_m": 5.0,
+  "kind": "pedestrian",
+  "instructions": "직접 접근하면 보행자가 횡단합니다. 정차·엑셀 해제 후 R키로 반복하세요."
+}

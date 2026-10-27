@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ko">
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CODRIVE · 운전자 상태·위험도</title>
+<style>
+:root{color-scheme:dark;font-family:system-ui,-apple-system,"Noto Sans CJK KR",sans-serif;background:#10151d;color:#eef3fa}
+*{box-sizing:border-box}body{margin:0;padding:32px;max-width:1500px;margin-inline:auto}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:30px}h1{font-size:27px;letter-spacing:3px;margin:0}small,.muted{color:#9ba9bc}.pill{padding:9px 16px;border:1px solid #46546a;border-radius:30px;font-size:14px}.hero{background:#192330;border:1px solid #34465c;border-left:6px solid #7b8fa8;border-radius:16px;padding:32px;margin-bottom:20px;min-height:160px}.hero.info{border-color:#49b8e8}.hero.warn{border-color:#ffb84c}.hero.critical{border-color:#ff6474;background:#361e29}.hero h2{font-size:clamp(26px,4vw,46px);margin:12px 0}.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}.card{background:#19212d;border:1px solid #2a384b;border-radius:14px;padding:22px}.label{color:#a6b5c9;font-size:14px}.value{font-size:30px;font-weight:650;margin:14px 0 8px}.bar{height:7px;background:#303d50;border-radius:8px;overflow:hidden;margin-top:16px}.bar span{display:block;height:100%;background:#52b9df;width:0;transition:width .2s}.details{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:16px}.row{display:flex;justify-content:space-between;gap:20px;margin:13px 0;font-size:14px}.note{line-height:1.8;font-size:14px;color:#a6b5c9}#events{font-size:14px;line-height:1.9}footer{margin-top:22px;color:#8f9db1;font-size:12px;line-height:1.8}@media(max-width:750px){body{padding:18px}.grid,.details{grid-template-columns:1fr}header{align-items:flex-start}.hero{padding:22px}.card{padding:18px}}
+
+.model{margin-bottom:20px}.modelHeader{display:flex;align-items:center;justify-content:space-between;gap:16px}.model .value{margin-bottom:0}.model.normal{border-color:#49b8a8}.model.caution{border-color:#ffb84c}.model.warning{border-color:#ff6474}.model p{line-height:1.7}.probabilities{display:flex;gap:24px;flex-wrap:wrap;margin:18px 0;font-variant-numeric:tabular-nums}.inputGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px 24px;margin-top:16px}.inputGrid .row{margin:4px 0}.missing{color:#f3ba6d}details{margin-top:18px}summary{cursor:pointer;color:#afc2d9}
+</style>
+<div id="previewLabel" class="pill" hidden>로컬 합성 미리보기 · DDS·음성 출력 없음</div>
+<header><div><h1>CODRIVE</h1><small>운전자 상태 · 위험도 모니터링</small></div><span class="pill" id="connection">연결 확인 중</span></header>
+<section class="hero" id="hero"><span class="label" id="level">운전자 상태 수신 대기</span><h2 id="message">카메라 연결을 확인하고 있습니다</h2><span class="muted" id="description">Jetson 2 → Raspberry Pi 5</span></section>
+<section class="card model" id="modelPanel" aria-live="polite">
+ <div class="modelHeader"><div><div class="label">보조 위험도 · XGBoost</div><div class="value" id="modelLevel">연결 대기</div></div><span class="pill" id="modelMode">화면 표시 전용</span></div>
+ <p id="modelMessage">모델 연결 상태를 확인하고 있습니다.</p>
+ <div class="probabilities" id="modelProbabilities"></div>
+ <div class="note" id="modelCoverage">입력 확인 중</div>
+ <details><summary>센서 입력 상태</summary><div id="modelInputs" class="inputGrid"></div></details>
+ <p class="note">합성 데이터로 학습한 보조 등급입니다. 표시 확률은 모델 등급별 확률이며 사고 확률이 아닙니다. 음향은 보류 중이며 모델 결과는 음성 경고를 발생시키지 않습니다.</p>
+</section>
+<div class="grid">
+ <section class="card"><div class="label">전방 주의 점수</div><div class="value" id="attention">—</div><div class="muted" id="forward">수신 대기</div><div class="bar"><span id="attentionBar"></span></div></section>
+ <section class="card"><div class="label">졸음 징후 점수</div><div class="value" id="drowsy">—</div><div class="muted">행동 분류 모델의 추정값</div><div class="bar"><span id="drowsyBar"></span></div></section>
+ <section class="card"><div class="label">휴대폰 · 하품</div><div class="value" id="phone">—</div><div class="muted" id="yawn">수신 대기</div></section>
+</div>
+<section class="card" style="margin-top:16px"><div class="label">마이크 · 사이렌 감지</div><div class="row"><span>시험 입력</span><span>C922 내장 USB 마이크 · Jetson 2</span></div><div class="row"><span>음향 분류</span><span id="audioKind">수신 대기</span></div><div class="row"><span>음향 메시지 나이</span><span id="audioAge">—</span></div><div class="row"><span>음향 메시지 수신</span><span id="audioSamples">0</span></div><p class="note" id="audioMode">음향은 시험 표시 모드입니다. 오탐 확인으로 자동 음성 경고를 보류합니다. 경적 감지는 비활성입니다.</p></section>
+<section class="card" style="margin-top:16px"><div class="label">보드 연결 상태 · 유선 DDS</div><div class="row"><span>Jetson 1 통신</span><span id="frontNode">확인 중</span></div><div class="row"><span>전방 카메라</span><span id="frontCamera">미연결 · 입력 제외</span></div><div class="row"><span>Jetson 2 통신</span><span id="cabinNode">확인 중</span></div><div class="row"><span>음향 프로세스</span><span id="audioNode">확인 중</span></div></section>
+<div class="details">
+ <section class="card"><div class="label">입력 상태</div><div class="row"><span>운전자 행동 검출</span><span id="presence">—</span></div><div class="row"><span>메시지 나이</span><span id="age">—</span></div><div class="row"><span>모델 추론 시간</span><span id="inference">—</span></div><div class="row"><span>상태 메시지 수신</span><span id="samples">0</span></div><div class="row"><span>음성 출력</span><span id="speech">확인 중</span></div><div class="row"><span>연결 상태</span><span id="health">확인 중</span></div></section>
+ <section class="card"><div class="label">최근 감지 안내</div><div id="events">아직 안내가 없습니다.</div><p class="note">외부 카메라는 전원 준비 전까지 제외합니다.<br>차량 CAN·INS 입력은 아직 연결되지 않았습니다.<br>속도 미수신 상태의 운전자 감지는 INFO 안내입니다.<br>현재 모델은 눈 감김을 직접 측정하지 않습니다.</p></section>
+</div>
+<footer>원본 영상은 전송하지 않고 정형 인식 결과를 수신합니다. 차량·도로 정보가 없으므로 전체 주행 안전 상태를 판정하지 않습니다.<br><span id="updated">—</span></footer>
+<script src="/dashboard.js"></script>
+</html>

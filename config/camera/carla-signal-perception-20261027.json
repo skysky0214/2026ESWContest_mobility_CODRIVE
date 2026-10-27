@@ -1,0 +1,52 @@
+{
+  "schema_version": 1,
+  "image_size": [
+    1280,
+    720
+  ],
+  "signal_min_confidence": 0.4,
+  "signal_crops": [
+    [
+      0,
+      0,
+      640,
+      384
+    ],
+    [
+      640,
+      0,
+      1280,
+      384
+    ]
+  ],
+  "signal_layout": "vertical_three_lamp",
+  "valid_image_polygon": [
+    [
+      0,
+      0
+    ],
+    [
+      1280,
+      0
+    ],
+    [
+      1280,
+      720
+    ],
+    [
+      0,
+      720
+    ]
+  ],
+  "limitations": [
+    "CARLA camera FOV60 and ground mount config must match.",
+    "Vertical three-lamp layout only.",
+    "No simulator actor positions or states are sent to perception."
+  ],
+  "minimum_state_evidence": 0.65,
+  "description": "Direct CARLA RGB pixels, FOV60; no physical screen/lens transformation",
+  "signal_model": "artifacts/models/vision/signal-recapture-20261027.engine",
+  "signal_detection_interval": 2,
+  "maximum_proposal_age_s": 0.18,
+  "proposal_note": "Spatial boxes may be reused up to 180ms; lamp evidence is remeasured from each current frame before any publication."
+}
